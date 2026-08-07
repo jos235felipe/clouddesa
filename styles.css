@@ -1637,18 +1637,27 @@ h1, h2, h3, h4, .brand-text {
 
 .btn-wa-micro {
   background: #25D366;
-  color: white;
+  color: #FFFFFF;
   text-decoration: none;
-  font-size: 0.82rem;
+  font-size: 0.85rem;
   font-weight: 800;
-  padding: 8px 14px;
+  padding: 10px 18px;
   border-radius: 9999px;
-  box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3);
-  transition: transform 0.2s;
+  box-shadow: 0 4px 14px rgba(37, 211, 102, 0.35);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  white-space: nowrap;
+  flex-shrink: 0;
+  line-height: 1;
 }
 
 .btn-wa-micro:hover {
-  transform: scale(1.05);
+  transform: translateY(-2px) scale(1.04);
+  box-shadow: 0 8px 18px rgba(37, 211, 102, 0.45);
+  background: #20BA5A;
 }
 
 /* ==========================================================================
