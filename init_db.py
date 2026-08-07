@@ -113,6 +113,11 @@ def init_database(db_password=None):
                     (name, desc, price, dur)
                 )
 
+        if "--reset" in sys.argv or "reset" in sys.argv:
+            print("Limpiando citas y usuarios de prueba...")
+            cursor.execute("TRUNCATE appointments RESTART IDENTITY CASCADE;")
+            cursor.execute("DELETE FROM users WHERE role != 'superadmin';")
+
         cursor.execute("SELECT COUNT(*) FROM users WHERE role = 'superadmin';")
         if cursor.fetchone()[0] == 0:
             cursor.execute(
@@ -120,15 +125,8 @@ def init_database(db_password=None):
                 ("Dra. Admin GINEMEDIK", "admin@ginemedik.com", "5555-0000", "1985-05-15", hash_password("admin123"), "superadmin")
             )
 
-        cursor.execute("SELECT COUNT(*) FROM users WHERE email = 'paciente@ginemedik.com';")
-        if cursor.fetchone()[0] == 0:
-            cursor.execute(
-                "INSERT INTO users (name, email, phone, birthdate, password_hash, role, is_verified) VALUES (%s, %s, %s, %s, %s, %s, TRUE);",
-                ("María López", "paciente@ginemedik.com", "5555-1234", "1994-08-20", hash_password("paciente123"), "paciente")
-            )
-
         conn.commit()
-        print("¡Base de datos DESA actualizada exitosamente con duración de 60 min!")
+        print("¡Base de datos DESA inicializada desde 0 exitosamente!")
         return True
     except Exception as e:
         conn.rollback()
