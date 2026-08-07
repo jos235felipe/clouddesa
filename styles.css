@@ -1531,24 +1531,30 @@ h1, h2, h3, h4, .brand-text {
 
 .doctor-avatar-box {
   position: relative;
-  width: 64px;
-  height: 64px;
-  border-radius: 50%;
-  background: #FFFFFF;
-  border: 2px solid var(--pantone-3115);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  padding: 4px;
-  box-shadow: 0 4px 15px rgba(0, 173, 239, 0.2);
+  width: 56px !important;
+  height: 56px !important;
+  max-width: 56px !important;
+  max-height: 56px !important;
+  border-radius: 50% !important;
+  background: #FFFFFF !important;
+  border: 2px solid var(--pantone-3115) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex-shrink: 0 !important;
+  overflow: hidden !important;
+  padding: 3px !important;
+  box-shadow: 0 4px 15px rgba(0, 173, 239, 0.2) !important;
 }
 
 .doctor-avatar-img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  border-radius: 50%;
+  width: 100% !important;
+  height: 100% !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
+  object-fit: contain !important;
+  border-radius: 50% !important;
+  display: block !important;
 }
 
 .online-status-dot {
