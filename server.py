@@ -2,6 +2,7 @@ import http.server
 import socketserver
 import json
 import urllib.parse
+import urllib.request
 import sys
 import os
 import re
@@ -17,6 +18,58 @@ DB_PORT = int(os.environ.get("DB_PORT", 5432))
 DB_NAME = os.environ.get("DB_NAME", "DESA")
 DB_USER = os.environ.get("DB_USER", "postgres")
 DB_PASSWORD = os.environ.get("DB_PASSWORD", "")
+
+BREVO_API_KEY = os.environ.get("BREVO_API_KEY", "")
+SENDER_EMAIL = os.environ.get("SENDER_EMAIL", "citas@ginemedik.com")
+SENDER_NAME = os.environ.get("SENDER_NAME", "GINEMEDIK Clínica")
+
+def send_brevo_token_email(to_email, to_name, token):
+    if not BREVO_API_KEY:
+        print(f"[Aviso Email] BREVO_API_KEY no configurada. Token para {to_email}: {token}")
+        return False
+
+    url = "https://api.brevo.com/v3/smtp/email"
+    headers = {
+        "accept": "application/json",
+        "api-key": BREVO_API_KEY,
+        "content-type": "application/json"
+    }
+
+    html_content = f"""
+    <div style="font-family: 'Plus Jakarta Sans', Arial, sans-serif; max-width: 520px; margin: 0 auto; border: 1px solid #e2e8f0; border-radius: 16px; padding: 28px; background: #ffffff; box-shadow: 0 10px 25px rgba(0,82,165,0.08);">
+      <div style="text-align: center; padding-bottom: 16px; border-bottom: 2px solid #f1f5f9;">
+        <h2 style="color: #0052A5; margin: 0; font-size: 24px; font-weight: 800;">GINEMEDIK</h2>
+        <p style="color: #00ADEF; font-size: 13px; font-weight: 700; margin-top: 4px; text-transform: uppercase; letter-spacing: 0.5px;">Centro Médico Ginecológico & Obstétrico</p>
+      </div>
+      <div style="padding: 20px 0;">
+        <h3 style="color: #0F172A; margin-top: 0;">¡Hola, {to_name}! 🌸</h3>
+        <p style="color: #475569; font-size: 15px; line-height: 1.6;">Tu código de verificación de 6 dígitos para activar tu cuenta en el portal médico de <strong>GINEMEDIK</strong> es:</p>
+        <div style="background: #E8F7FC; border: 2px dashed #00ADEF; padding: 20px; text-align: center; border-radius: 12px; margin: 24px 0;">
+          <span style="font-size: 32px; font-weight: 800; letter-spacing: 10px; color: #0052A5;">{token}</span>
+        </div>
+        <p style="color: #64748B; font-size: 13px; line-height: 1.5;">Ingresa este código en la pantalla de confirmación para activar tu cuenta e iniciar sesión.</p>
+      </div>
+      <div style="border-top: 1px solid #f1f5f9; padding-top: 16px; text-align: center; color: #94A3B8; font-size: 12px;">
+        <p style="margin: 0;">&copy; 2026 GINEMEDIK - Cuidado integral para la mujer.</p>
+      </div>
+    </div>
+    """
+
+    payload = {
+        "sender": {"name": SENDER_NAME, "email": SENDER_EMAIL},
+        "to": [{"email": to_email, "name": to_name}],
+        "subject": f"🔐 Tu Código de Verificación GINEMEDIK: {token}",
+        "htmlContent": html_content
+    }
+
+    try:
+        req = urllib.request.Request(url, data=json.dumps(payload).encode('utf-8'), headers=headers, method='POST')
+        with urllib.request.urlopen(req) as resp:
+            print(f"[Email Brevo Enviado] Token enviado exitosamente a {to_email}")
+            return True
+    except Exception as e:
+        print(f"[Error Email Brevo] No se pudo enviar correo a {to_email}: {e}")
+        return False
 
 def get_db():
     try:
@@ -360,6 +413,10 @@ class GinemedikRequestHandler(http.server.SimpleHTTPRequestHandler):
                     conn.commit()
 
                     dest_name = "tu correo electrónico" if method == "email" else f"tu WhatsApp ({phone})"
+                    # Enviar correo real vía Brevo si el método es email
+                    if method == "email":
+                        send_brevo_token_email(email, name, token)
+
                     return self.send_json({
                         "requires_verification": True,
                         "email": email,
@@ -392,6 +449,9 @@ class GinemedikRequestHandler(http.server.SimpleHTTPRequestHandler):
                 }
                 FALLBACK_USERS.append(new_u)
                 dest_name = "tu correo electrónico" if method == "email" else f"tu WhatsApp ({phone})"
+                if method == "email":
+                    send_brevo_token_email(email, name, token)
+
                 return self.send_json({
                     "requires_verification": True,
                     "email": email,

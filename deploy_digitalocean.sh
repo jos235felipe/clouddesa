@@ -32,20 +32,25 @@ cd /var/www/ginemedik
 # 6. Instalar librerías de Python
 sudo pip3 install psycopg2-binary --break-system-packages || sudo pip3 install psycopg2-binary
 
+BREVO_KEY="${1:-$BREVO_API_KEY}"
+
 # 7. Crear archivo de variables de entorno (.env)
-sudo bash -c 'cat <<EOF > /var/www/ginemedik/.env
+sudo bash -c "cat <<EOF > /var/www/ginemedik/.env
 DB_HOST=127.0.0.1
 DB_PORT=5432
 DB_NAME=DESA
 DB_USER=postgres
 DB_PASSWORD=ginemedik2026!
-EOF'
+BREVO_API_KEY=${BREVO_KEY}
+SENDER_EMAIL=citas@ginemedik.com
+SENDER_NAME=GINEMEDIK Clínica
+EOF"
 
 # 8. Poblar la base de datos PostgreSQL
 python3 init_db.py ginemedik2026!
 
 # 9. Crear servicio de fondo Systemd (Servidor activo 24/7)
-sudo bash -c 'cat <<EOF > /etc/systemd/system/ginemedik.service
+sudo bash -c "cat <<EOF > /etc/systemd/system/ginemedik.service
 [Unit]
 Description=GINEMEDIK Python Web Server
 After=network.target postgresql.service
@@ -61,10 +66,13 @@ Environment=DB_PORT=5432
 Environment=DB_NAME=DESA
 Environment=DB_USER=postgres
 Environment=DB_PASSWORD=ginemedik2026!
+Environment=BREVO_API_KEY=${BREVO_KEY}
+Environment=SENDER_EMAIL=citas@ginemedik.com
+Environment=SENDER_NAME=GINEMEDIK Clínica
 
 [Install]
 WantedBy=multi-user.target
-EOF'
+EOF"
 
 sudo systemctl daemon-reload
 sudo systemctl enable ginemedik
