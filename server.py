@@ -124,7 +124,7 @@ FALLBACK_SERVICES = [
     {"id": 2, "name": "Papanicolaou", "description": "Examen de Papanicolaou (Citología cérvico-vaginal) para prevención y diagnóstico.", "price": 130.00, "duration_minutes": 30},
     {"id": 3, "name": "Ultrasonido", "description": "Ultrasonido pélvico / obstétrico / ginecológico de alta definición.", "price": 200.00, "duration_minutes": 30},
     {"id": 4, "name": "Consulta + Ultrasonido", "description": "Evaluación médica completa combinada con examen de ultrasonido.", "price": 390.00, "duration_minutes": 30},
-    {"id": 5, "name": "Consulta + Ultrasonido + Papanicolaou", "description": "Chequeo ginecológico integral completo (Duración: 1 Hora).", "price": 430.00, "duration_minutes": 60}
+    {"id": 5, "name": "Consulta + Ultrasonido + Papanicolaou", "description": "Chequeo ginecológico integral completo.", "price": 430.00, "duration_minutes": 60}
 ]
 
 FALLBACK_APPOINTMENTS = [
@@ -658,7 +658,7 @@ class GinemedikRequestHandler(http.server.SimpleHTTPRequestHandler):
                     new_id = cursor.fetchone()[0]
                     conn.commit()
                     return self.send_json({
-                        "message": f"¡Cita agendada exitosamente en GINEMEDIK! (Duración: {duration_minutes} minutos)",
+                        "message": "¡Cita agendada exitosamente en GINEMEDIK!",
                         "appointment": {
                             "id": new_id,
                             "patient_name": patient_name,
@@ -701,7 +701,7 @@ class GinemedikRequestHandler(http.server.SimpleHTTPRequestHandler):
                 }
                 FALLBACK_APPOINTMENTS.append(new_appt)
                 return self.send_json({
-                    "message": f"¡Cita agendada exitosamente en GINEMEDIK! (Duración: {duration_minutes} minutos)",
+                    "message": "¡Cita agendada exitosamente en GINEMEDIK!",
                     "appointment": new_appt
                 })
 

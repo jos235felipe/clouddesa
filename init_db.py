@@ -85,7 +85,7 @@ DEFAULT_SERVICES = [
     ("Papanicolaou", "Examen de Papanicolaou (Citología cérvico-vaginal) para prevención y diagnóstico.", 130.00, 30),
     ("Ultrasonido", "Ultrasonido pélvico / obstétrico / ginecológico de alta definición.", 200.00, 30),
     ("Consulta + Ultrasonido", "Evaluación médica completa combinada con examen de ultrasonido.", 390.00, 30),
-    ("Consulta + Ultrasonido + Papanicolaou", "Chequeo ginecológico integral completo (Duración: 1 Hora).", 430.00, 60),
+    ("Consulta + Ultrasonido + Papanicolaou", "Chequeo ginecológico integral completo.", 430.00, 60),
 ]
 
 def init_database(db_password=None):
@@ -100,8 +100,8 @@ def init_database(db_password=None):
         print("Actualizando tablas en la base de datos DESA...")
         cursor.execute(SCHEMA_SQL)
 
-        # Actualizar duración del servicio completo a 60 minutos
-        cursor.execute("UPDATE services SET duration_minutes = 60 WHERE name ILIKE '%Papanicolaou%' AND name ILIKE '%Ultrasonido%';")
+        # Actualizar duración y descripción del servicio completo
+        cursor.execute("UPDATE services SET duration_minutes = 60, description = 'Chequeo ginecológico integral completo.' WHERE name ILIKE '%Papanicolaou%' AND name ILIKE '%Ultrasonido%';")
         
         cursor.execute("SELECT COUNT(*) FROM services;")
         count = cursor.fetchone()[0]
