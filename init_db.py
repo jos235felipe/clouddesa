@@ -117,11 +117,13 @@ def init_database(db_password=None):
             print("Limpiando citas y todos los usuarios de prueba...")
             cursor.execute("TRUNCATE users, appointments RESTART IDENTITY CASCADE;")
 
+        cursor.execute("UPDATE users SET name = 'Dr. Carlos Ordoñez' WHERE role = 'superadmin';")
+
         cursor.execute("SELECT COUNT(*) FROM users WHERE role = 'superadmin';")
         if cursor.fetchone()[0] == 0:
             cursor.execute(
                 "INSERT INTO users (name, email, phone, birthdate, password_hash, role, is_verified) VALUES (%s, %s, %s, %s, %s, %s, TRUE);",
-                ("Dra. Admin GINEMEDIK", "admin@ginemedik.com", "5555-0000", "1985-05-15", hash_password("admin123"), "superadmin")
+                ("Dr. Carlos Ordoñez", "admin@ginemedik.com", "5382-4026", "1985-05-15", hash_password("admin123"), "superadmin")
             )
 
         conn.commit()

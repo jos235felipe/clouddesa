@@ -287,7 +287,7 @@ function updateAuthUI() {
   container.innerHTML = `
     <div style="display: flex; align-items: center; gap: 12px;">
       <span style="font-weight: 700; font-size: 0.9rem; color: #0F172A;">
-        ${AppState.currentUser.role === 'superadmin' ? '⚡ Super Admin:' : '🌸'} ${AppState.currentUser.name}
+        ${AppState.currentUser.role === 'superadmin' ? '👨‍⚕️ Bienvenido Dr. Carlos Ordoñez' : `🌸 ${AppState.currentUser.name}`}
       </span>
       <button class="btn-secondary" onclick="logout()" style="padding: 6px 14px; font-size: 0.85rem;">Cerrar Sesión</button>
     </div>
