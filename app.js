@@ -651,6 +651,8 @@ function renderAdminDashboard() {
   const totalRev = appts.reduce((sum, a) => sum + (a.status !== 'cancelada' ? a.price : 0), 0);
   document.getElementById('admin-stat-revenue').textContent = `Q${totalRev.toFixed(2)}`;
 
+  renderGcalMonthGrid();
+
   const tbody = document.getElementById('admin-appointments-tbody');
   if (!tbody) return;
 
@@ -671,6 +673,105 @@ function renderAdminDashboard() {
     </tr>
   `).join('');
 }
+
+let gcalViewDate = new Date();
+
+function renderGcalMonthGrid() {
+  const gridContainer = document.getElementById('gcal-month-days-grid');
+  const labelEl = document.getElementById('gcal-month-year-label');
+  if (!gridContainer || !labelEl) return;
+
+  const year = gcalViewDate.getFullYear();
+  const month = gcalViewDate.getMonth();
+
+  const monthNames = [
+    'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+    'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+  ];
+  labelEl.textContent = `${monthNames[month]} ${year}`;
+
+  const firstDay = new Date(year, month, 1).getDay();
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const daysInPrevMonth = new Date(year, month, 0).getDate();
+
+  const today = new Date();
+  const isCurrentMonth = today.getFullYear() === year && today.getMonth() === month;
+  const todayDate = today.getDate();
+
+  let html = '';
+
+  // Días del mes anterior
+  for (let i = firstDay - 1; i >= 0; i--) {
+    const dayNum = daysInPrevMonth - i;
+    html += `<div class="gcal-day-cell other-month"><span class="gcal-day-num">${dayNum}</span></div>`;
+  }
+
+  // Días del mes actual
+  for (let day = 1; day <= daysInMonth; day++) {
+    const monthFormatted = String(month + 1).padStart(2, '0');
+    const dayFormatted = String(day).padStart(2, '0');
+    const dateStr = `${year}-${monthFormatted}-${dayFormatted}`;
+
+    const dayAppts = (AppState.adminAppointments || []).filter(a => a.appointment_date === dateStr && a.status !== 'cancelada');
+    const isToday = isCurrentMonth && day === todayDate;
+
+    html += `
+      <div class="gcal-day-cell ${isToday ? 'is-today' : ''}">
+        <span class="gcal-day-num ${isToday ? 'today-pill' : ''}">${day}</span>
+        <div class="gcal-day-events">
+          ${dayAppts.map(a => `
+            <div class="gcal-event-chip" onclick="showApptDetailAlert('${a.patient_name}', '${a.service_name}', '${a.appointment_date}', '${a.start_time}', '${a.patient_phone}')">
+              <span class="chip-time">${a.start_time}</span>
+              <span class="chip-title">${a.patient_name}</span>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+  }
+
+  // Días del mes siguiente para completar la cuadrícula
+  const totalCellsSoFar = firstDay + daysInMonth;
+  const trailingCells = totalCellsSoFar > 35 ? 42 - totalCellsSoFar : 35 - totalCellsSoFar;
+  for (let d = 1; d <= trailingCells; d++) {
+    html += `<div class="gcal-day-cell other-month"><span class="gcal-day-num">${d}</span></div>`;
+  }
+
+  gridContainer.innerHTML = html;
+}
+
+window.changeGcalMonth = function(delta) {
+  gcalViewDate.setMonth(gcalViewDate.getMonth() + delta);
+  renderGcalMonthGrid();
+};
+
+window.goGcalToday = function() {
+  gcalViewDate = new Date();
+  renderGcalMonthGrid();
+};
+
+window.toggleGcalView = function(view) {
+  const calView = document.getElementById('gcal-calendar-view');
+  const tableCard = document.getElementById('admin-table-container');
+  const calBtn = document.getElementById('btn-view-cal-tab');
+  const listBtn = document.getElementById('btn-view-list-tab');
+
+  if (view === 'cal') {
+    calView.classList.remove('hidden');
+    tableCard.classList.add('hidden');
+    calBtn.classList.add('active');
+    listBtn.classList.remove('active');
+  } else {
+    calView.classList.add('hidden');
+    tableCard.classList.remove('hidden');
+    listBtn.classList.add('active');
+    calBtn.classList.remove('active');
+  }
+};
+
+window.showApptDetailAlert = function(patient, service, date, time, phone) {
+  alert(`📋 Detalles de la Cita GINEMEDIK:\n\n👤 Paciente: ${patient}\n🩺 Servicio: ${service}\n📅 Fecha: ${date}\n⏰ Hora: ${time}\n📞 Teléfono: ${phone || 'No registrado'}`);
+};
 
 function handleCSVFileSelect(e) {
   const file = e.target.files[0];

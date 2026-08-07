@@ -1739,3 +1739,201 @@ h1, h2, h3, h4, .brand-text {
   color: #64748B;
   margin: 0;
 }
+
+/* ==========================================================================
+   CALENDARIO VISUAL INTERACTIVO ESTILO GOOGLE CALENDAR
+   ========================================================================== */
+.gcal-container-card {
+  background: #FFFFFF;
+  border-radius: var(--radius-lg);
+  border: 1px solid #E2E8F0;
+  box-shadow: 0 10px 30px -10px rgba(0, 82, 165, 0.08);
+  overflow: hidden;
+  padding: 24px;
+}
+
+.gcal-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 2px solid #F1F5F9;
+  padding-bottom: 18px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.gcal-header-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.gcal-logo-badge {
+  background: #E8F7FC;
+  color: var(--pantone-2935);
+  font-size: 0.85rem;
+  font-weight: 800;
+  padding: 6px 14px;
+  border-radius: 9999px;
+  border: 1px solid rgba(0, 173, 239, 0.3);
+}
+
+.gcal-title {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #0F172A;
+  margin: 0;
+}
+
+.gcal-controls-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.gcal-month-label {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--pantone-2935);
+  min-width: 140px;
+  text-align: center;
+}
+
+.gcal-view-toggle {
+  display: flex;
+  background: #F1F5F9;
+  padding: 4px;
+  border-radius: 12px;
+  gap: 4px;
+  margin-left: 10px;
+}
+
+.btn-tab-toggle {
+  border: none;
+  background: transparent;
+  padding: 6px 14px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #64748B;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-tab-toggle.active {
+  background: #FFFFFF;
+  color: var(--pantone-2935);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+.gcal-calendar-body {
+  border: 1px solid #E2E8F0;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.gcal-weekdays-header {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  background: #F8FAFC;
+  border-bottom: 1px solid #E2E8F0;
+  text-align: center;
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: #64748B;
+  padding: 12px 0;
+  letter-spacing: 0.5px;
+}
+
+.gcal-month-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  background: #E2E8F0;
+  gap: 1px;
+}
+
+.gcal-day-cell {
+  background: #FFFFFF;
+  min-height: 110px;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  transition: background 0.2s;
+}
+
+.gcal-day-cell:hover {
+  background: #F8FAFC;
+}
+
+.gcal-day-cell.other-month {
+  background: #FAFAFA;
+  opacity: 0.5;
+}
+
+.gcal-day-cell.is-today {
+  background: #F0F9FF;
+}
+
+.gcal-day-num {
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: #334155;
+  margin-bottom: 6px;
+  display: inline-block;
+}
+
+.today-pill {
+  background: var(--pantone-2935);
+  color: white;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.gcal-day-events {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  overflow-y: auto;
+  max-height: 80px;
+}
+
+.gcal-event-chip {
+  background: linear-gradient(135deg, #E8F7FC, #FFF0F5);
+  border-left: 3px solid var(--pantone-3115);
+  border-radius: 6px;
+  padding: 4px 8px;
+  font-size: 0.75rem;
+  color: #0F172A;
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.gcal-event-chip:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0, 173, 239, 0.25);
+  border-left-color: var(--pantone-2935);
+}
+
+.chip-time {
+  font-weight: 800;
+  color: var(--pantone-2935);
+  font-size: 0.72rem;
+}
+
+.chip-title {
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

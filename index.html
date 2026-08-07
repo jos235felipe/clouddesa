@@ -12,7 +12,7 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
     rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=2.7">
+  <link rel="stylesheet" href="styles.css?v=2.8">
 </head>
 
 <body>
@@ -461,7 +461,35 @@
             </div>
           </div>
 
-          <div class="admin-table-card mt-4">
+          <!-- CALENDARIO VISUAL GOOGLE CALENDAR DEL DOCTOR -->
+          <div class="gcal-container-card mt-4">
+            <div class="gcal-card-header">
+              <div class="gcal-header-left">
+                <span class="gcal-logo-badge">🗓️ Google Calendar</span>
+                <h3 class="gcal-title">Agenda Médica del Dr. Carlos Ordoñez</h3>
+              </div>
+              <div class="gcal-controls-right">
+                <button class="btn-secondary" id="btn-gcal-prev" onclick="changeGcalMonth(-1)">&larr;</button>
+                <button class="btn-secondary" id="btn-gcal-today" onclick="goGcalToday()">Hoy</button>
+                <span class="gcal-month-label" id="gcal-month-year-label">Agosto 2026</span>
+                <button class="btn-secondary" id="btn-gcal-next" onclick="changeGcalMonth(1)">&rarr;</button>
+                <div class="gcal-view-toggle">
+                  <button class="btn-tab-toggle active" id="btn-view-cal-tab" onclick="toggleGcalView('cal')">📅 Calendario</button>
+                  <button class="btn-tab-toggle" id="btn-view-list-tab" onclick="toggleGcalView('list')">📋 Lista de Citas</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Grid Calendario Mensual Estilo Google Calendar -->
+            <div id="gcal-calendar-view" class="gcal-calendar-body">
+              <div class="gcal-weekdays-header">
+                <div>DOM</div><div>LUN</div><div>MAR</div><div>MIÉ</div><div>JUE</div><div>VIE</div><div>SÁB</div>
+              </div>
+              <div class="gcal-month-grid" id="gcal-month-days-grid"></div>
+            </div>
+          </div>
+
+          <div class="admin-table-card mt-4" id="admin-table-container">
             <div class="table-header">
               <h3>Agenda Médica General</h3>
               <div class="table-filters">
@@ -593,7 +621,7 @@
       <span class="wa-float-text">WhatsApp Clínica</span>
     </a>
 
-    <script src="app.js?v=2.6"></script>
+    <script src="app.js?v=2.8"></script>
 </body>
 
 </html>
