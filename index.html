@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,9 +9,12 @@
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=1.6">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="styles.css?v=2.3">
 </head>
+
 <body>
 
   <!-- 1. PANTALLA PRINCIPAL DE ACCESO OBLIGATORIO (LOGIN GATE) -->
@@ -59,7 +63,8 @@
             <label for="gate-login-email" class="clinic-label">Correo Electrónico:</label>
             <div class="input-icon-wrapper">
               <span class="input-icon">✉️</span>
-              <input type="email" id="gate-login-email" class="form-control clinic-input" placeholder="ejemplo@correo.com" required autocomplete="email">
+              <input type="email" id="gate-login-email" class="form-control clinic-input"
+                placeholder="ejemplo@correo.com" required autocomplete="email">
             </div>
           </div>
 
@@ -67,7 +72,8 @@
             <label for="gate-login-password" class="clinic-label">Contraseña:</label>
             <div class="input-icon-wrapper">
               <span class="input-icon">🔒</span>
-              <input type="password" id="gate-login-password" class="form-control clinic-input" placeholder="••••••••" required autocomplete="current-password">
+              <input type="password" id="gate-login-password" class="form-control clinic-input" placeholder="••••••••"
+                required autocomplete="current-password">
             </div>
           </div>
 
@@ -85,7 +91,8 @@
             <label for="gate-reg-name" class="clinic-label">Nombre Completo:</label>
             <div class="input-icon-wrapper">
               <span class="input-icon">👤</span>
-              <input type="text" id="gate-reg-name" class="form-control clinic-input" placeholder="Ej: María López" required>
+              <input type="text" id="gate-reg-name" class="form-control clinic-input" placeholder="Ej: María López"
+                required>
             </div>
           </div>
 
@@ -93,7 +100,8 @@
             <label for="gate-reg-email" class="clinic-label">Correo Electrónico:</label>
             <div class="input-icon-wrapper">
               <span class="input-icon">✉️</span>
-              <input type="email" id="gate-reg-email" class="form-control clinic-input" placeholder="ejemplo@correo.com" required>
+              <input type="email" id="gate-reg-email" class="form-control clinic-input" placeholder="ejemplo@correo.com"
+                required>
             </div>
           </div>
 
@@ -128,7 +136,8 @@
             <label for="gate-reg-password" class="clinic-label">Contraseña:</label>
             <div class="input-icon-wrapper">
               <span class="input-icon">🔑</span>
-              <input type="password" id="gate-reg-password" class="form-control clinic-input" placeholder="Mínimo 6 caracteres" required>
+              <input type="password" id="gate-reg-password" class="form-control clinic-input"
+                placeholder="Mínimo 6 caracteres" required>
             </div>
           </div>
 
@@ -136,7 +145,8 @@
             <label for="gate-reg-confirm-password" class="clinic-label">Confirmar Contraseña:</label>
             <div class="input-icon-wrapper">
               <span class="input-icon">🔒</span>
-              <input type="password" id="gate-reg-confirm-password" class="form-control clinic-input" placeholder="Repite tu contraseña" required>
+              <input type="password" id="gate-reg-confirm-password" class="form-control clinic-input"
+                placeholder="Repite tu contraseña" required>
             </div>
           </div>
 
@@ -157,13 +167,15 @@
 
           <div class="form-group">
             <label for="gate-verify-code" class="text-center font-bold clinic-label">Código de 6 Dígitos:</label>
-            <input type="text" id="gate-verify-code" class="form-control token-input clinic-input" placeholder="0 0 0 0 0 0" maxlength="6" required>
+            <input type="text" id="gate-verify-code" class="form-control token-input clinic-input"
+              placeholder="0 0 0 0 0 0" maxlength="6" required>
           </div>
 
           <button type="submit" class="btn-main-cta full-width mt-3 btn-clinic-primary">
             <span>✔ Activar Cuenta e Iniciar Sesión</span>
           </button>
-          <button type="button" id="btn-resend-code" class="btn-secondary full-width mt-2" style="background: rgba(0, 173, 239, 0.1); color: var(--pantone-2935); border: 1px dashed var(--pantone-3115);">
+          <button type="button" id="btn-resend-code" class="btn-secondary full-width mt-2"
+            style="background: rgba(0, 173, 239, 0.1); color: var(--pantone-2935); border: 1px dashed var(--pantone-3115);">
             📩 Reenviar Código por Correo
           </button>
           <button type="button" id="btn-back-to-register" class="btn-secondary full-width mt-2">
@@ -179,7 +191,8 @@
     <header class="navbar">
       <div class="nav-container">
         <div class="brand-logo" id="nav-brand">
-          <img src="logo.png" alt="GINEMEDIK Logo Oficial" class="logo-img-nav" style="height: 50px !important; width: auto !important; max-width: 200px !important; display: block !important;">
+          <img src="logo.png" alt="GINEMEDIK Logo Oficial" class="logo-img-nav"
+            style="height: 50px !important; width: auto !important; max-width: 200px !important; display: block !important;">
         </div>
 
         <nav class="nav-links" id="patient-nav-links">
@@ -198,14 +211,20 @@
         <div class="hero-bg-glow"></div>
         <div class="hero-container">
           <div class="hero-content">
-            <span class="badge-pink">🌸 Bienvenida a GINEMEDIK</span>
+            <span class="badge-pink">🌸 Bienvenid@ a GINEMEDIK</span>
             <h1 class="hero-title">Tu salud y bienestar en las mejores manos</h1>
             <p class="hero-subtitle">
-              Cuidamos de ti con calidez, profesionalismo y tecnología avanzada. Agenda tu cita médica en pocos segundos seleccionando el día y la hora que mejor se adapte a ti.
+              Cuidamos de ti con calidez, profesionalismo y tecnología avanzada. Agenda tu cita médica en pocos segundos
+              seleccionando el día y la hora que mejor se adapte a ti.
             </p>
             <div class="hero-actions">
               <button id="btn-hero-agendar" class="btn-main-cta">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 4H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"></path><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M19 4H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"></path>
+                  <line x1="16" y1="2" x2="16" y2="6"></line>
+                  <line x1="8" y1="2" x2="8" y2="6"></line>
+                  <line x1="3" y1="10" x2="21" y2="10"></line>
+                </svg>
                 Agendar Cita Ahora
               </button>
               <a href="#servicios" class="btn-secondary-outline">Ver Servicios y Precios</a>
@@ -285,7 +304,7 @@
             <div id="booking-step-2" class="step-content hidden">
               <h3>Paso 2: Selecciona día y hora conveniente</h3>
               <p class="step-desc">Atendemos de Lunes a Viernes (8:00 AM - 5:00 PM) y Sábados (8:00 AM - 1:00 PM).</p>
-              
+
               <div class="date-time-picker-layout">
                 <div class="picker-column">
                   <label for="appointment-date-input" class="form-label">Fecha de la Cita:</label>
@@ -308,7 +327,7 @@
 
             <div id="booking-step-3" class="step-content hidden">
               <h3>Paso 3: Revisa y confirma los detalles de tu cita</h3>
-              
+
               <div class="summary-card">
                 <div class="summary-row">
                   <span class="label">Paciente:</span>
@@ -341,7 +360,8 @@
                 </div>
                 <div class="form-group mt-3">
                   <label for="booking-notes" class="form-label">Notas o Síntomas (Opcional):</label>
-                  <textarea id="booking-notes" class="form-control" rows="2" placeholder="Describe brevemente tu consulta..."></textarea>
+                  <textarea id="booking-notes" class="form-control" rows="2"
+                    placeholder="Describe brevemente tu consulta..."></textarea>
                 </div>
               </div>
 
@@ -418,7 +438,8 @@
             <div class="table-header">
               <h3>Agenda Médica General</h3>
               <div class="table-filters">
-                <input type="text" id="admin-search-input" class="form-control" placeholder="Buscar por paciente o servicio...">
+                <input type="text" id="admin-search-input" class="form-control"
+                  placeholder="Buscar por paciente o servicio...">
               </div>
             </div>
 
@@ -467,7 +488,8 @@
     <div class="modal-card wide">
       <button class="modal-close" id="btn-close-bulk">&times;</button>
       <h3>📁 Carga Masiva de Citas (CSV / Google Calendar)</h3>
-      <p class="form-subtitle">Carga un archivo CSV con las citas previas para ingresarlas a PostgreSQL <strong>DESA</strong>.</p>
+      <p class="form-subtitle">Carga un archivo CSV con las citas previas para ingresarlas a PostgreSQL
+        <strong>DESA</strong>.</p>
       <div class="bulk-upload-area" id="drop-zone">
         <div class="upload-icon">📄</div>
         <p><strong>Arrastra y suelta tu archivo CSV aquí</strong> o haz clic para examinar.</p>
@@ -516,13 +538,15 @@
         <div class="gcal-body mt-3">
           <div class="info-card-blue">
             <h4>💡 ¿Cómo funciona la sincronización automática?</h4>
-            <p>En producción, se utiliza la API de Google Calendar. Cada cita se guarda en PostgreSQL <strong>DESA</strong> y en el Google Calendar del médico.</p>
+            <p>En producción, se utiliza la API de Google Calendar. Cada cita se guarda en PostgreSQL
+              <strong>DESA</strong> y en el Google Calendar del médico.</p>
           </div>
         </div>
       </div>
     </div>
   </div>
 
-  <script src="app.js?v=2.2"></script>
+  <script src="app.js?v=2.3"></script>
 </body>
+
 </html>

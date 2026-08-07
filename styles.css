@@ -1309,3 +1309,152 @@ h1, h2, h3, h4, .brand-text {
   .stats-grid { grid-template-columns: 1fr; }
   .slots-grid { grid-template-columns: repeat(2, 1fr); }
 }
+
+/* ==========================================================================
+   SERVICIOS Y TARJETAS MÉDICAS MEJORADAS
+   ========================================================================== */
+.services-section {
+  padding: 80px 0;
+  background: linear-gradient(180deg, #F0F9FF 0%, #FFFFFF 100%);
+}
+
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 30px;
+  margin-top: 45px;
+}
+
+.service-card {
+  position: relative;
+  background: #FFFFFF;
+  border-radius: var(--radius-lg);
+  padding: 32px 28px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border: 1px solid #E2E8F0;
+  box-shadow: 0 10px 30px -10px rgba(0, 82, 165, 0.08);
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.service-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 22px 45px -12px rgba(0, 82, 165, 0.18), 0 10px 25px rgba(244, 143, 177, 0.15);
+  border-color: var(--pantone-3115);
+}
+
+.featured-card {
+  border: 2px solid var(--pantone-3115);
+  background: linear-gradient(180deg, #FFFFFF 0%, #F0F9FF 100%);
+}
+
+.popular-badge {
+  position: absolute;
+  top: -14px;
+  right: 24px;
+  background: linear-gradient(135deg, var(--pantone-2935), var(--pantone-3115));
+  color: #FFFFFF;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 1px;
+  padding: 6px 16px;
+  border-radius: var(--radius-full);
+  box-shadow: 0 4px 15px rgba(0, 173, 239, 0.35);
+  text-transform: uppercase;
+}
+
+.service-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 18px;
+}
+
+.service-icon-box {
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #E8F7FC 0%, #FFF0F5 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8rem;
+  border: 1px solid rgba(0, 173, 239, 0.2);
+}
+
+.service-tag-pill {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--pantone-2935);
+  background: var(--light-cyan);
+  padding: 5px 12px;
+  border-radius: var(--radius-full);
+}
+
+.service-card-body h3 {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--text-dark);
+  margin-bottom: 10px;
+  line-height: 1.3;
+}
+
+.service-desc {
+  font-size: 0.92rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+  margin-bottom: 20px;
+}
+
+.service-features-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 28px 0;
+}
+
+.service-features-list li {
+  font-size: 0.88rem;
+  color: #475569;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.service-features-list .check-icon {
+  color: #00ADEF;
+  font-weight: 800;
+  background: #E8F7FC;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  flex-shrink: 0;
+}
+
+.service-card-footer {
+  border-top: 1px solid #F1F5F9;
+  padding-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.price-tag {
+  font-size: 2.2rem;
+  font-weight: 900;
+  color: var(--pantone-2935);
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+}
+
+.price-tag .currency {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: var(--pantone-3115);
+}

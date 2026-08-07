@@ -331,26 +331,75 @@ function getFallbackServices() {
   ];
 }
 
+function getServiceMetadata(svc) {
+  const nameLower = svc.name.toLowerCase();
+  if (nameLower.includes('papanicolaou') && nameLower.includes('ultrasonido')) {
+    return {
+      icon: '🌸',
+      badge: 'PAQUETE COMPLETO',
+      tag: 'Chequeo Preventivo Integrado',
+      features: ['Evaluación ginecológica completa', 'Ultrasonido de alta definición', 'Examen de Papanicolaou', 'Informe médico y recomendaciones']
+    };
+  } else if (nameLower.includes('ultrasonido') && nameLower.includes('consulta')) {
+    return {
+      icon: '💫',
+      badge: 'MÁS POPULAR',
+      tag: 'Consulta + Imagenología',
+      features: ['Evaluación médica especializada', 'Ultrasonido pélvico o obstétrico', 'Revisión y diagnóstico en tiempo real']
+    };
+  } else if (nameLower.includes('ultrasonido')) {
+    return {
+      icon: '📡',
+      badge: null,
+      tag: 'Diagnóstico por Imagen',
+      features: ['Imágenes de alta resolución', 'Evaluación uterina y ovárica', 'Explicación detallada de hallazgos']
+    };
+  } else if (nameLower.includes('papanicolaou')) {
+    return {
+      icon: '🔬',
+      badge: null,
+      tag: 'Prevención & Citología',
+      features: ['Citología cérvico-vaginal', 'Prevención y detección temprana', 'Resultados 100% confidenciales']
+    };
+  } else {
+    return {
+      icon: '👩‍⚕️',
+      badge: null,
+      tag: 'Atención Médica',
+      features: ['Revisión clínica especializada', 'Atención cálida y personalizada', 'Prescripción y plan de salud']
+    };
+  }
+}
+
 function renderServicesGrid() {
   const container = document.getElementById('services-grid');
   if (!container) return;
 
-  container.innerHTML = AppState.services.map(svc => `
-    <div class="service-card ${svc.price >= 390 ? 'popular' : ''}">
-      ${svc.price >= 390 ? '<span class="popular-badge">POPULAR</span>' : ''}
-      <div>
-        <div class="service-icon-box">🩺</div>
-        <h3>${svc.name}</h3>
-        <p>${svc.description}</p>
+  container.innerHTML = AppState.services.map(svc => {
+    const meta = getServiceMetadata(svc);
+    return `
+      <div class="service-card ${meta.badge ? 'featured-card' : ''}">
+        ${meta.badge ? `<span class="popular-badge">${meta.badge}</span>` : ''}
+        <div class="service-card-header">
+          <div class="service-icon-box">${meta.icon}</div>
+          <span class="service-tag-pill">${meta.tag}</span>
+        </div>
+        <div class="service-card-body">
+          <h3>${svc.name}</h3>
+          <p class="service-desc">${svc.description}</p>
+          <ul class="service-features-list">
+            ${meta.features.map(f => `<li><span class="check-icon">✓</span> ${f}</li>`).join('')}
+          </ul>
+        </div>
+        <div class="service-card-footer">
+          <div class="price-tag"><span class="currency">Q</span>${svc.price.toFixed(0)}</div>
+          <button class="btn-primary full-width btn-clinic-primary" onclick="selectServiceAndBook(${svc.id})">
+            <span>Agendar este Servicio</span> &rarr;
+          </button>
+        </div>
       </div>
-      <div>
-        <div class="price-tag"><span>Q</span>${svc.price.toFixed(0)}</div>
-        <button class="btn-primary full-width" onclick="selectServiceAndBook(${svc.id})">
-          Agendar este Servicio
-        </button>
-      </div>
-    </div>
-  `).join('');
+    `;
+  }).join('');
 }
 
 function renderStep1Services() {
