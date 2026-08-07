@@ -435,14 +435,6 @@
               <h2>Agenda Médica - Dr. Carlos Ordoñez</h2>
               <p>Gestión completa de citas, expedientes de pacientes y consultas de GINEMEDIK.</p>
             </div>
-            <div class="admin-actions-top">
-              <button id="btn-open-bulk-modal" class="btn-secondary-glow">
-                📁 Carga Masiva (CSV / Google Calendar)
-              </button>
-              <button id="btn-open-gcal-sync" class="btn-primary-glow">
-                🗓 Sincronización Google Calendar
-              </button>
-            </div>
           </div>
 
           <div class="stats-grid">
@@ -495,6 +487,20 @@
                 <tbody id="admin-appointments-tbody"></tbody>
               </table>
             </div>
+          </div>
+
+          <!-- Herramienta de Migración Única (Google Calendar / CSV) -->
+          <div class="admin-migration-box mt-4">
+            <div class="migration-info">
+              <span class="migration-icon">🔄</span>
+              <div>
+                <h4>Carga de Agenda Inicial (Uso Único)</h4>
+                <p>Las nuevas citas se sincronizan automáticamente. Usa esta opción solo para importar citas previas registradas en Google Calendar o CSV.</p>
+              </div>
+            </div>
+            <button id="btn-open-bulk-modal" class="btn-secondary-glow">
+              📁 Importar Citas Previas (CSV / Google Calendar)
+            </button>
           </div>
         </div>
       </section>

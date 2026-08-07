@@ -1693,3 +1693,49 @@ h1, h2, h3, h4, .brand-text {
 .wa-float-icon {
   font-size: 1.4rem;
 }
+
+/* ==========================================================================
+   MIGRACIÓN INICIAL DISCRETA PARA EL DOCTOR
+   ========================================================================== */
+.admin-migration-box {
+  background: #FFFFFF;
+  border: 1px dashed var(--pantone-3115);
+  border-radius: var(--radius-lg);
+  padding: 24px 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  box-shadow: 0 4px 15px rgba(0, 82, 165, 0.04);
+}
+
+.migration-info {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.migration-icon {
+  font-size: 1.8rem;
+  background: var(--light-cyan);
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.migration-info h4 {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #0F172A;
+  margin: 0 0 4px 0;
+}
+
+.migration-info p {
+  font-size: 0.85rem;
+  color: #64748B;
+  margin: 0;
+}
