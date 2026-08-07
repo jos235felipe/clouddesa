@@ -12,7 +12,7 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
     rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=2.3">
+  <link rel="stylesheet" href="styles.css?v=2.4">
 </head>
 
 <body>
@@ -211,12 +211,21 @@
         <div class="hero-bg-glow"></div>
         <div class="hero-container">
           <div class="hero-content">
-            <span class="badge-pink">🌸 Bienvenid@ a GINEMEDIK</span>
-            <h1 class="hero-title">Tu salud y bienestar en las mejores manos</h1>
+            <div class="hero-badge-group">
+              <span class="badge-pink">🌸 Centro Médico Ginecológico & Obstétrico</span>
+              <span class="badge-cyan">🟢 Citas Disponibles</span>
+            </div>
+            <h1 class="hero-title">Tu salud y bienestar en <span class="highlight-text">las mejores manos</span></h1>
             <p class="hero-subtitle">
-              Cuidamos de ti con calidez, profesionalismo y tecnología avanzada. Agenda tu cita médica en pocos segundos
-              seleccionando el día y la hora que mejor se adapte a ti.
+              Cuidamos de ti con calidez humana, privacidad absoluta y tecnología médica avanzada. Reserva tu cita en pocos segundos de forma fácil y segura.
             </p>
+
+            <div class="hero-trust-row">
+              <div class="trust-pill"><span class="trust-icon">🛡️</span> 100% Confidencial</div>
+              <div class="trust-pill"><span class="trust-icon">⭐</span> Atención Especializada</div>
+              <div class="trust-pill"><span class="trust-icon">⚡</span> Reserva 24/7</div>
+            </div>
+
             <div class="hero-actions">
               <button id="btn-hero-agendar" class="btn-main-cta">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -225,16 +234,30 @@
                   <line x1="8" y1="2" x2="8" y2="6"></line>
                   <line x1="3" y1="10" x2="21" y2="10"></line>
                 </svg>
-                Agendar Cita Ahora
+                <span>Agendar Cita Ahora</span> &rarr;
               </button>
               <a href="#servicios" class="btn-secondary-outline">Ver Servicios y Precios</a>
             </div>
           </div>
 
           <div class="hero-card-preview">
-            <div class="glass-card">
-              <div class="card-badge">Horarios de Atención</div>
+            <div class="glass-card hero-specialist-card">
+              <div class="doctor-profile-header">
+                <div class="doctor-avatar-box">
+                  <span class="doctor-avatar-icon">👩‍⚕️</span>
+                  <span class="online-status-dot"></span>
+                </div>
+                <div class="doctor-info">
+                  <h3>GINEMEDIK</h3>
+                  <p class="specialty-title">Ginecología & Obstetricia Integral</p>
+                  <span class="doctor-rating">★★★★★ <span>(Atención de Excelencia)</span></span>
+                </div>
+              </div>
+
               <div class="schedule-rows">
+                <div class="card-badge-header">
+                  <span class="calendar-icon">📅</span> <strong>Horarios de Atención</strong>
+                </div>
                 <div class="schedule-row">
                   <span class="day">Lunes a Viernes</span>
                   <span class="time">8:00 AM - 5:00 PM</span>
@@ -247,6 +270,17 @@
                   <span class="day">Domingos</span>
                   <span class="time">Cerrado</span>
                 </div>
+              </div>
+
+              <div class="emergency-contact-box">
+                <div class="emergency-text">
+                  <span class="wa-icon">💬</span>
+                  <div>
+                    <strong>¿Dudas sobre tu cita?</strong>
+                    <p>Atención directa por WhatsApp</p>
+                  </div>
+                </div>
+                <a href="https://wa.me/50235238732" target="_blank" class="btn-wa-micro">Escribir &rarr;</a>
               </div>
             </div>
           </div>
@@ -546,7 +580,7 @@
     </div>
   </div>
 
-  <script src="app.js?v=2.3"></script>
+  <script src="app.js?v=2.4"></script>
 </body>
 
 </html>

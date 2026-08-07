@@ -1458,3 +1458,181 @@ h1, h2, h3, h4, .brand-text {
   font-weight: 800;
   color: var(--pantone-3115);
 }
+
+/* ==========================================================================
+   NUEVO DISEÑO HERO PREMIUM Y MODERNO
+   ========================================================================== */
+.hero-badge-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+.badge-cyan {
+  background: #E8F7FC;
+  color: #0052A5;
+  border: 1px solid rgba(0, 173, 239, 0.3);
+  padding: 6px 14px;
+  border-radius: 9999px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.highlight-text {
+  background: linear-gradient(135deg, var(--pantone-2935) 0%, var(--pantone-3115) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: inline-block;
+}
+
+.hero-trust-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin: 24px 0 32px 0;
+}
+
+.trust-pill {
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid #E2E8F0;
+  padding: 8px 16px;
+  border-radius: 12px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #334155;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 4px 12px rgba(0, 82, 165, 0.04);
+}
+
+.hero-specialist-card {
+  padding: 28px !important;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  border: 1px solid rgba(0, 173, 239, 0.25) !important;
+  box-shadow: 0 20px 45px -10px rgba(0, 82, 165, 0.15) !important;
+}
+
+.doctor-profile-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  border-bottom: 1px solid #F1F5F9;
+  padding-bottom: 18px;
+}
+
+.doctor-avatar-box {
+  position: relative;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #FFF0F5, #E8F7FC);
+  border: 2px solid var(--pantone-3115);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8rem;
+  flex-shrink: 0;
+}
+
+.online-status-dot {
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  width: 13px;
+  height: 13px;
+  background: #10B981;
+  border: 2px solid white;
+  border-radius: 50%;
+}
+
+.doctor-info h3 {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #0F172A;
+  margin: 0 0 2px 0;
+}
+
+.specialty-title {
+  font-size: 0.85rem;
+  color: var(--pantone-2935);
+  font-weight: 700;
+  margin: 0 0 4px 0;
+}
+
+.doctor-rating {
+  font-size: 0.8rem;
+  color: #F59E0B;
+  font-weight: 800;
+}
+
+.doctor-rating span {
+  color: #64748B;
+  font-weight: 600;
+  margin-left: 4px;
+}
+
+.card-badge-header {
+  font-size: 0.9rem;
+  color: #0F172A;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.emergency-contact-box {
+  background: linear-gradient(135deg, #F0F9FF 0%, #FFF5F7 100%);
+  border: 1px solid rgba(0, 173, 239, 0.2);
+  border-radius: 16px;
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.emergency-text {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.wa-icon {
+  font-size: 1.5rem;
+}
+
+.emergency-text strong {
+  font-size: 0.88rem;
+  color: #0F172A;
+  display: block;
+}
+
+.emergency-text p {
+  font-size: 0.78rem;
+  color: #64748B;
+  margin: 0;
+}
+
+.btn-wa-micro {
+  background: #25D366;
+  color: white;
+  text-decoration: none;
+  font-size: 0.82rem;
+  font-weight: 800;
+  padding: 8px 14px;
+  border-radius: 9999px;
+  box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3);
+  transition: transform 0.2s;
+}
+
+.btn-wa-micro:hover {
+  transform: scale(1.05);
+}
