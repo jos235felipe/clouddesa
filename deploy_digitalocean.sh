@@ -24,10 +24,15 @@ sudo systemctl enable postgresql
 sudo -u postgres psql -c "ALTER USER postgres WITH PASSWORD 'ginemedik2026!';"
 sudo -u postgres psql -c "CREATE DATABASE \"DESA\";" || true
 
-# 5. Descargar repositorio de GitHub
-sudo rm -rf /var/www/ginemedik
-sudo git clone https://github.com/jos235felipe/clouddesa.git /var/www/ginemedik
-cd /var/www/ginemedik
+# 5. Descargar o actualizar repositorio de GitHub
+if [ -d "/var/www/ginemedik/.git" ]; then
+    cd /var/www/ginemedik
+    sudo git pull origin main || true
+else
+    cd /var/www
+    sudo git clone https://github.com/jos235felipe/clouddesa.git /var/www/ginemedik
+    cd /var/www/ginemedik
+fi
 
 # 6. Instalar librerías de Python
 sudo pip3 install psycopg2-binary --break-system-packages || sudo pip3 install psycopg2-binary
