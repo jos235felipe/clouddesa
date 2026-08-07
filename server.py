@@ -422,8 +422,7 @@ class GinemedikRequestHandler(http.server.SimpleHTTPRequestHandler):
                         "email": email,
                         "phone": phone,
                         "verification_method": method,
-                        "message": f"Te hemos enviado un código de verificación de 6 dígitos a {dest_name}.",
-                        "simulated_token": token
+                        "message": f"Te hemos enviado un código de verificación de 6 dígitos a {dest_name}."
                     })
                 except Exception as e:
                     conn.rollback()
@@ -457,8 +456,7 @@ class GinemedikRequestHandler(http.server.SimpleHTTPRequestHandler):
                     "email": email,
                     "phone": phone,
                     "verification_method": method,
-                    "message": f"Te hemos enviado un código de verificación de 6 dígitos a {dest_name}.",
-                    "simulated_token": token
+                    "message": f"Te hemos enviado un código de verificación de 6 dígitos a {dest_name}."
                 })
 
         elif path == "/api/auth/verify-token":
@@ -502,7 +500,7 @@ class GinemedikRequestHandler(http.server.SimpleHTTPRequestHandler):
             else:
                 for u in FALLBACK_USERS:
                     if u["email"] == email:
-                        if u.get("verification_token") == token or token == "123456":
+                        if u.get("verification_token") == token:
                             u["is_verified"] = True
                             u["verification_token"] = None
                             return self.send_json({
@@ -540,8 +538,7 @@ class GinemedikRequestHandler(http.server.SimpleHTTPRequestHandler):
                     return self.send_json({
                         "requires_verification": True,
                         "email": email,
-                        "error": "Tu cuenta aún no ha sido verificada. Ingresa el código de activación enviado.",
-                        "simulated_token": row[8]
+                        "error": "Tu cuenta aún no ha sido verificada. Ingresa el código de activación enviado."
                     }, code=403)
 
                 return self.send_json({
@@ -555,8 +552,7 @@ class GinemedikRequestHandler(http.server.SimpleHTTPRequestHandler):
                             return self.send_json({
                                 "requires_verification": True,
                                 "email": email,
-                                "error": "Tu cuenta aún no ha sido verificada.",
-                                "simulated_token": u.get("verification_token")
+                                "error": "Tu cuenta aún no ha sido verificada."
                             }, code=403)
 
                         return self.send_json({

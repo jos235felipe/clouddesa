@@ -156,7 +156,7 @@ async function handleGateLogin(e) {
       setLoggedInUser(data.user);
     } else if (res.status === 403 && data.requires_verification) {
       AppState.pendingVerifyEmail = email;
-      showVerificationForm(email, 'email', data.simulated_token);
+      showVerificationForm(email, 'email');
     } else {
       showAlert('gate-login-alert', data.error || 'Credenciales incorrectas.', 'danger');
     }
@@ -192,7 +192,7 @@ async function handleGateRegister(e) {
 
     if (res.ok && data.requires_verification) {
       AppState.pendingVerifyEmail = email;
-      showVerificationForm(email, method, data.simulated_token);
+      showVerificationForm(email, method);
     } else {
       showAlert('gate-register-alert', data.error || 'Error al registrar.', 'danger');
     }
@@ -201,7 +201,7 @@ async function handleGateRegister(e) {
   }
 }
 
-function showVerificationForm(email, method, token) {
+function showVerificationForm(email, method) {
   document.getElementById('gate-auth-tabs').classList.add('hidden');
   document.getElementById('gate-login-form').classList.add('hidden');
   document.getElementById('gate-register-form').classList.add('hidden');
@@ -212,10 +212,7 @@ function showVerificationForm(email, method, token) {
     : `Te enviamos un código de 6 dígitos a tu <strong>WhatsApp</strong>`;
 
   document.getElementById('verify-dest-text').innerHTML = destText;
-  
-  if (token) {
-    showAlert('gate-verify-alert', `CÓDIGO DE PRUEBA ENVIADO: ${token}`, 'success');
-  }
+  showAlert('gate-verify-alert', `Revisa tu correo electrónico para ingresar el código de 6 dígitos.`, 'success');
 }
 
 async function handleGateVerify(e) {
