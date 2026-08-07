@@ -55,21 +55,29 @@ def send_brevo_token_email(to_email, to_name, token):
     </div>
     """
 
-    payload = {
-        "sender": {"name": SENDER_NAME, "email": SENDER_EMAIL},
-        "to": [{"email": to_email, "name": to_name}],
-        "subject": f"🔐 Tu Código de Verificación GINEMEDIK: {token}",
-        "htmlContent": html_content
-    }
+    senders = [SENDER_EMAIL, "josfelipe235@gmail.com"]
+    for s_email in senders:
+        if not s_email:
+            continue
+        payload = {
+            "sender": {"name": SENDER_NAME, "email": s_email},
+            "to": [{"email": to_email, "name": to_name}],
+            "subject": f"🔐 Tu Código de Verificación GINEMEDIK: {token}",
+            "htmlContent": html_content
+        }
 
-    try:
-        req = urllib.request.Request(url, data=json.dumps(payload).encode('utf-8'), headers=headers, method='POST')
-        with urllib.request.urlopen(req) as resp:
-            print(f"[Email Brevo Enviado] Token enviado exitosamente a {to_email}")
-            return True
-    except Exception as e:
-        print(f"[Error Email Brevo] No se pudo enviar correo a {to_email}: {e}")
-        return False
+        try:
+            req = urllib.request.Request(url, data=json.dumps(payload).encode('utf-8'), headers=headers, method='POST')
+            with urllib.request.urlopen(req) as resp:
+                print(f"[Email Brevo Enviado] Token enviado exitosamente a {to_email} usando {s_email}")
+                return True
+        except urllib.error.HTTPError as e:
+            err_msg = e.read().decode('utf-8', errors='ignore')
+            print(f"[Error Brevo {e.code}] Con remitente {s_email}: {err_msg}")
+        except Exception as e:
+            print(f"[Error Brevo Excepcion] Con remitente {s_email}: {e}")
+
+    return False
 
 def get_db():
     try:
