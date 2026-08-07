@@ -9,7 +9,12 @@ echo "=== INICIANDO INSTALACIÓN DE GINEMEDIK EN DIGITALOCEAN ==="
 sudo apt update && sudo apt upgrade -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold"
 
 # 2. Instalar dependencias
-sudo apt install -y python3 python3-pip postgresql postgresql-contrib nginx git
+sudo apt install -y python3 python3-pip postgresql postgresql-contrib nginx git ufw
+
+# Permitir tráfico web y SSH
+sudo ufw allow 22/tcp || true
+sudo ufw allow 80/tcp || true
+sudo ufw allow 443/tcp || true
 
 # 3. Iniciar servicio PostgreSQL
 sudo systemctl start postgresql
