@@ -78,9 +78,6 @@ function setupEventListeners() {
   document.getElementById('gate-verify-form')?.addEventListener('submit', handleGateVerify);
   document.getElementById('btn-back-to-register')?.addEventListener('click', () => switchGateTab('register'));
 
-  document.getElementById('gate-demo-patient')?.addEventListener('click', () => quickGateLogin('paciente@ginemedik.com', 'paciente123'));
-  document.getElementById('gate-demo-admin')?.addEventListener('click', () => quickGateLogin('admin@ginemedik.com', 'admin123'));
-
   document.getElementById('btn-hero-agendar')?.addEventListener('click', () => {
     document.getElementById('booking-section').scrollIntoView({ behavior: 'smooth' });
   });
