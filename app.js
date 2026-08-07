@@ -2,7 +2,7 @@
    GINEMEDIK - FRONTEND SCRIPT (SIN MOSTRAR TIEMPO/DURACIÓN A LAS PACIENTES)
    ========================================================================== */
 
-const API_BASE = 'http://localhost:5000/api';
+const API_BASE = '/api';
 
 const AppState = {
   currentUser: JSON.parse(localStorage.getItem('ginemedik_user')) || null,
