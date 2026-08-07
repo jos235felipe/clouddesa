@@ -47,7 +47,7 @@ DB_NAME=DESA
 DB_USER=postgres
 DB_PASSWORD=ginemedik2026!
 BREVO_API_KEY=${BREVO_KEY}
-SENDER_EMAIL=josfelipe235@gmail.com
+SENDER_EMAIL=citas@ginemedik.com
 SENDER_NAME=GINEMEDIK Clínica
 EOF"
 
@@ -72,7 +72,7 @@ Environment=DB_NAME=DESA
 Environment=DB_USER=postgres
 Environment=DB_PASSWORD=ginemedik2026!
 Environment=BREVO_API_KEY=${BREVO_KEY}
-Environment=SENDER_EMAIL=josfelipe235@gmail.com
+Environment=SENDER_EMAIL=citas@ginemedik.com
 Environment=SENDER_NAME=GINEMEDIK Clínica
 
 [Install]

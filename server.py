@@ -20,7 +20,7 @@ DB_USER = os.environ.get("DB_USER", "postgres")
 DB_PASSWORD = os.environ.get("DB_PASSWORD", "")
 
 BREVO_API_KEY = os.environ.get("BREVO_API_KEY", "")
-SENDER_EMAIL = os.environ.get("SENDER_EMAIL", "josfelipe235@gmail.com")
+SENDER_EMAIL = os.environ.get("SENDER_EMAIL", "citas@ginemedik.com")
 SENDER_NAME = os.environ.get("SENDER_NAME", "GINEMEDIK Clínica")
 
 def send_brevo_token_email(to_email, to_name, token):
