@@ -1,10 +1,12 @@
 #!/bin/bash
 set -e
 
+export DEBIAN_FRONTEND=noninteractive
+
 echo "=== INICIANDO INSTALACIÓN DE GINEMEDIK EN DIGITALOCEAN ==="
 
 # 1. Actualizar paquetes del sistema
-sudo apt update && sudo apt upgrade -y
+sudo apt update && sudo apt upgrade -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold"
 
 # 2. Instalar dependencias
 sudo apt install -y python3 python3-pip postgresql postgresql-contrib nginx git
