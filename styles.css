@@ -1531,16 +1531,24 @@ h1, h2, h3, h4, .brand-text {
 
 .doctor-avatar-box {
   position: relative;
-  width: 56px;
-  height: 56px;
+  width: 64px;
+  height: 64px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #FFF0F5, #E8F7FC);
+  background: #FFFFFF;
   border: 2px solid var(--pantone-3115);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.8rem;
   flex-shrink: 0;
+  padding: 4px;
+  box-shadow: 0 4px 15px rgba(0, 173, 239, 0.2);
+}
+
+.doctor-avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 50%;
 }
 
 .online-status-dot {
