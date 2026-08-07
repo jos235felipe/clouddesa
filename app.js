@@ -37,6 +37,10 @@ function evaluateAccessGate() {
     gateEl.classList.remove('hidden');
     appContentEl.classList.add('hidden');
   } else {
+    if (AppState.currentUser.role === 'superadmin') {
+      AppState.currentUser.name = 'Dr. Carlos Ordoñez';
+      localStorage.setItem('ginemedik_user', JSON.stringify(AppState.currentUser));
+    }
     gateEl.classList.add('hidden');
     appContentEl.classList.remove('hidden');
 
