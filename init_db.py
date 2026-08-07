@@ -114,9 +114,8 @@ def init_database(db_password=None):
                 )
 
         if "--reset" in sys.argv or "reset" in sys.argv:
-            print("Limpiando citas y usuarios de prueba...")
-            cursor.execute("TRUNCATE appointments RESTART IDENTITY CASCADE;")
-            cursor.execute("DELETE FROM users WHERE role != 'superadmin';")
+            print("Limpiando citas y todos los usuarios de prueba...")
+            cursor.execute("TRUNCATE users, appointments RESTART IDENTITY CASCADE;")
 
         cursor.execute("SELECT COUNT(*) FROM users WHERE role = 'superadmin';")
         if cursor.fetchone()[0] == 0:
