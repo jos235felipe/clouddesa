@@ -77,6 +77,7 @@ function setupEventListeners() {
   document.getElementById('gate-register-form')?.addEventListener('submit', handleGateRegister);
   document.getElementById('gate-verify-form')?.addEventListener('submit', handleGateVerify);
   document.getElementById('btn-back-to-register')?.addEventListener('click', () => switchGateTab('register'));
+  document.getElementById('btn-resend-code')?.addEventListener('click', handleResendCode);
 
   document.getElementById('btn-hero-agendar')?.addEventListener('click', () => {
     document.getElementById('booking-section').scrollIntoView({ behavior: 'smooth' });
@@ -235,6 +236,29 @@ async function handleGateVerify(e) {
     }
   } catch (err) {
     showAlert('gate-verify-alert', 'Error al verificar el código.', 'danger');
+  }
+}
+
+async function handleResendCode() {
+  if (!AppState.pendingVerifyEmail) {
+    showAlert('gate-verify-alert', 'Por favor ingresa tu correo electrónico.', 'danger');
+    return;
+  }
+  showAlert('gate-verify-alert', 'Enviando nuevo código a tu correo...', 'info');
+  try {
+    const res = await fetch(`${API_BASE}/auth/resend-token`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: AppState.pendingVerifyEmail })
+    });
+    const data = await res.json();
+    if (res.ok) {
+      showAlert('gate-verify-alert', `¡Nuevo código enviado con éxito a ${AppState.pendingVerifyEmail}!`, 'success');
+    } else {
+      showAlert('gate-verify-alert', data.error || 'Error al reenviar código.', 'danger');
+    }
+  } catch (err) {
+    showAlert('gate-verify-alert', 'Error al conectar con el servidor.', 'danger');
   }
 }
 

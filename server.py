@@ -398,22 +398,32 @@ class GinemedikRequestHandler(http.server.SimpleHTTPRequestHandler):
             if conn:
                 cursor = conn.cursor()
                 try:
-                    cursor.execute("SELECT id FROM users WHERE email = %s;", (email,))
-                    if cursor.fetchone():
-                        return self.send_json({"error": "Este correo electrónico ya está registrado."}, code=400)
-
-                    cursor.execute(
-                        """
-                        INSERT INTO users (name, email, phone, birthdate, password_hash, role, is_verified, verification_token, verification_method)
-                        VALUES (%s, %s, %s, %s, %s, 'paciente', FALSE, %s, %s) RETURNING id;
-                        """,
-                        (name, email, phone, birthdate, p_hash, token, method)
-                    )
-                    new_id = cursor.fetchone()[0]
+                    cursor.execute("SELECT id, is_verified FROM users WHERE email = %s;", (email,))
+                    row = cursor.fetchone()
+                    if row:
+                        user_id, is_verified = row[0], row[1]
+                        if is_verified:
+                            return self.send_json({"error": "Este correo electrónico ya está registrado e instalado. Por favor inicia sesión con tu contraseña."}, code=400)
+                        else:
+                            # Cuenta pendiente de verificación: actualizar credenciales y token nuevo
+                            cursor.execute(
+                                """
+                                UPDATE users SET name = %s, phone = %s, birthdate = %s, password_hash = %s, verification_token = %s, verification_method = %s
+                                WHERE id = %s;
+                                """,
+                                (name, phone, birthdate, p_hash, token, method, user_id)
+                            )
+                    else:
+                        cursor.execute(
+                            """
+                            INSERT INTO users (name, email, phone, birthdate, password_hash, role, is_verified, verification_token, verification_method)
+                            VALUES (%s, %s, %s, %s, %s, 'paciente', FALSE, %s, %s) RETURNING id;
+                            """,
+                            (name, email, phone, birthdate, p_hash, token, method)
+                        )
                     conn.commit()
 
                     dest_name = "tu correo electrónico" if method == "email" else f"tu WhatsApp ({phone})"
-                    # Enviar correo real vía Brevo si el método es email
                     if method == "email":
                         send_brevo_token_email(email, name, token)
 
@@ -422,7 +432,7 @@ class GinemedikRequestHandler(http.server.SimpleHTTPRequestHandler):
                         "email": email,
                         "phone": phone,
                         "verification_method": method,
-                        "message": f"Te hemos enviado un código de verificación de 6 dígitos a {dest_name}."
+                        "message": f"Te hemos enviado un nuevo código de activación a {dest_name}."
                     })
                 except Exception as e:
                     conn.rollback()
@@ -433,31 +443,52 @@ class GinemedikRequestHandler(http.server.SimpleHTTPRequestHandler):
             else:
                 for u in FALLBACK_USERS:
                     if u["email"] == email:
-                        return self.send_json({"error": "Este correo electrónico ya está registrado."}, code=400)
-                new_u = {
-                    "id": len(FALLBACK_USERS) + 1,
-                    "name": name,
-                    "email": email,
-                    "phone": phone,
-                    "birthdate": birthdate,
-                    "password_hash": p_hash,
-                    "role": "paciente",
-                    "is_verified": False,
-                    "verification_token": token,
-                    "verification_method": method
-                }
-                FALLBACK_USERS.append(new_u)
-                dest_name = "tu correo electrónico" if method == "email" else f"tu WhatsApp ({phone})"
-                if method == "email":
-                    send_brevo_token_email(email, name, token)
+                        if u.get("is_verified", True):
+                            return self.send_json({"error": "Este correo electrónico ya está registrado."}, code=400)
+                        else:
+                            u["verification_token"] = token
+                            u["name"] = name
+                            u["phone"] = phone
+                            u["password_hash"] = p_hash
+                            if method == "email":
+                                send_brevo_token_email(email, name, token)
+                            return self.send_json({
+                                "requires_verification": True,
+                                "email": email,
+                                "message": "Te hemos reenviado un nuevo código de activación."
+                            })
 
-                return self.send_json({
-                    "requires_verification": True,
-                    "email": email,
-                    "phone": phone,
-                    "verification_method": method,
-                    "message": f"Te hemos enviado un código de verificación de 6 dígitos a {dest_name}."
-                })
+        elif path == "/api/auth/resend-token":
+            email = body.get("email", "").strip().lower()
+            if not email:
+                return self.send_json({"error": "Ingresa tu correo electrónico."}, code=400)
+
+            token = generate_token()
+            conn = get_db()
+            if conn:
+                cursor = conn.cursor()
+                cursor.execute("SELECT id, name, is_verified FROM users WHERE email = %s;", (email,))
+                row = cursor.fetchone()
+                if not row:
+                    cursor.close()
+                    conn.close()
+                    return self.send_json({"error": "Usuario no encontrado."}, code=404)
+
+                user_id, name, is_verified = row[0], row[1], row[2]
+                if is_verified:
+                    cursor.close()
+                    conn.close()
+                    return self.send_json({"error": "Esta cuenta ya está verificada. Puedes iniciar sesión directamente."}, code=400)
+
+                cursor.execute("UPDATE users SET verification_token = %s WHERE id = %s;", (token, user_id))
+                conn.commit()
+                cursor.close()
+                conn.close()
+
+                send_brevo_token_email(email, name, token)
+                return self.send_json({"message": f"¡Código nuevo enviado a {email}!"})
+            else:
+                return self.send_json({"error": "Servicio de base de datos no disponible."}, code=500)
 
         elif path == "/api/auth/verify-token":
             email = body.get("email", "").strip().lower()
