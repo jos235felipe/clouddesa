@@ -435,6 +435,11 @@
               <h2>Agenda Médica - Dr. Carlos Ordoñez</h2>
               <p>Gestión completa de citas, expedientes de pacientes y consultas de GINEMEDIK.</p>
             </div>
+            <div class="admin-header-actions">
+              <button class="btn-secondary-glow" onclick="openBlockSlotModal()">
+                🚫 Bloquear Horario / Ausencia
+              </button>
+            </div>
           </div>
 
           <div class="stats-grid">
@@ -613,9 +618,79 @@
             </p>
           </div>
         </div>
+    </div>
+  </div>
+
+  <!-- Modal: Bloquear Horario / Ausencia Médica -->
+  <div id="block-slot-modal" class="modal-overlay hidden">
+    <div class="modal-card">
+      <button class="modal-close" onclick="closeBlockSlotModal()">&times;</button>
+      <h3>🚫 Bloquear Horario / Ausencia Médica</h3>
+      <p class="form-subtitle">Los horarios bloqueados no estarán disponibles para reservación por las pacientes.</p>
+      
+      <form id="block-slot-form" onsubmit="handleBlockSlotSubmit(event)">
+        <div class="form-group">
+          <label for="block-date" class="form-label">Fecha a Bloquear:</label>
+          <input type="date" id="block-date" class="form-control" required>
+        </div>
+        <div class="form-row" style="display: flex; gap: 12px;">
+          <div class="form-group" style="flex: 1;">
+            <label for="block-start-time" class="form-label">Hora Inicio:</label>
+            <input type="time" id="block-start-time" class="form-control" value="08:00" required>
+          </div>
+          <div class="form-group" style="flex: 1;">
+            <label for="block-end-time" class="form-label">Hora Fin:</label>
+            <input type="time" id="block-end-time" class="form-control" value="12:00" required>
+          </div>
+        </div>
+        <div class="form-group mt-2">
+          <label for="block-reason" class="form-label">Motivo (Opcional):</label>
+          <input type="text" id="block-reason" class="form-control" placeholder="Ej: Asunto Personal / Conferencia Médica">
+        </div>
+        <button type="submit" class="btn-main-cta full-width mt-3 btn-clinic-primary">
+          🚫 Confirmar Bloqueo de Horario
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Expediente Clínico y Notas Médicas -->
+  <div id="clinical-notes-modal" class="modal-overlay hidden">
+    <div class="modal-card wide">
+      <button class="modal-close" onclick="closeClinicalNotesModal()">&times;</button>
+      <div style="display: flex; align-items: center; gap: 12px; border-bottom: 2px solid #F1F5F9; padding-bottom: 14px;">
+        <span style="font-size: 2rem;">📝</span>
+        <div>
+          <h3 id="cn-patient-name" style="margin: 0; color: #0F172A;">Expediente Médico de la Paciente</h3>
+          <p id="cn-appt-info" class="form-subtitle" style="margin: 2px 0 0 0; font-size: 0.85rem; color: #64748B;">Detalles de la cita médica</p>
+        </div>
+      </div>
+
+      <div class="modal-body-content mt-3">
+        <div style="background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 12px; padding: 14px 18px; display: flex; gap: 20px; flex-wrap: wrap; font-size: 0.88rem; color: #334155;">
+          <div><strong>📞 Teléfono:</strong> <span id="cn-patient-phone">-</span></div>
+          <div><strong>✉️ Correo:</strong> <span id="cn-patient-email">-</span></div>
+          <div><strong>🩺 Servicio:</strong> <span id="cn-service-name">-</span></div>
+        </div>
+
+        <div class="form-group mt-3">
+          <label for="cn-notes-textarea" class="form-label"><strong>Notas Médicas y Diagnóstico (Confidencial):</strong></label>
+          <textarea id="cn-notes-textarea" class="form-control" rows="5" placeholder="Escribe aquí las observaciones clínicas, diagnóstico, recetas o recomendaciones para el expediente de la paciente..."></textarea>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px; gap: 12px; flex-wrap: wrap;">
+          <button type="button" class="btn-wa-micro" id="btn-cn-send-wa" style="padding: 10px 18px; font-size: 0.85rem;">
+            💬 Recordatorio por WhatsApp
+          </button>
+          <button type="button" class="btn-primary" onclick="saveClinicalNotes()">
+            💾 Guardar Nota en Expediente
+          </button>
+        </div>
       </div>
     </div>
-    <!-- Botón Flotante de WhatsApp para la Clínica -->
+  </div>
+
+  <!-- Botón Flotante de WhatsApp para la Clínica -->
     <a href="https://wa.me/50253824026" target="_blank" class="floating-wa-btn" title="Contactar por WhatsApp">
       <span class="wa-float-icon">💬</span>
       <span class="wa-float-text">WhatsApp Clínica</span>

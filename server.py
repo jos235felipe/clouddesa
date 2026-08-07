@@ -357,7 +357,7 @@ class GinemedikRequestHandler(http.server.SimpleHTTPRequestHandler):
             if conn:
                 cursor = conn.cursor()
                 cursor.execute(
-                    "SELECT id, patient_name, patient_email, patient_phone, service_name, price, appointment_date, start_time, end_time, status, notes FROM appointments ORDER BY appointment_date DESC, start_time DESC;"
+                    "SELECT id, patient_name, patient_email, patient_phone, service_name, price, appointment_date, start_time, end_time, status, notes, COALESCE(clinical_notes, '') FROM appointments ORDER BY appointment_date DESC, start_time DESC;"
                 )
                 rows = cursor.fetchall()
                 appts = []
@@ -373,13 +373,35 @@ class GinemedikRequestHandler(http.server.SimpleHTTPRequestHandler):
                         "start_time": r[7].strftime("%H:%M") if hasattr(r[7], 'strftime') else str(r[7])[:5],
                         "end_time": r[8].strftime("%H:%M") if hasattr(r[8], 'strftime') else str(r[8])[:5],
                         "status": r[9],
-                        "notes": r[10]
+                        "notes": r[10],
+                        "clinical_notes": r[11]
                     })
                 cursor.close()
                 conn.close()
                 return self.send_json(appts)
             else:
                 return self.send_json(FALLBACK_APPOINTMENTS)
+
+        elif path == "/api/admin/blocked-slots":
+            conn = get_db()
+            if conn:
+                cursor = conn.cursor()
+                cursor.execute("SELECT id, block_date, start_time, end_time, reason FROM schedule_blocks ORDER BY block_date DESC, start_time ASC;")
+                rows = cursor.fetchall()
+                blocks = []
+                for r in rows:
+                    blocks.append({
+                        "id": r[0],
+                        "block_date": r[1].strftime("%Y-%m-%d") if hasattr(r[1], 'strftime') else str(r[1]),
+                        "start_time": r[2].strftime("%H:%M") if hasattr(r[2], 'strftime') else str(r[2])[:5],
+                        "end_time": r[3].strftime("%H:%M") if hasattr(r[3], 'strftime') else str(r[3])[:5],
+                        "reason": r[4]
+                    })
+                cursor.close()
+                conn.close()
+                return self.send_json(blocks)
+            else:
+                return self.send_json(FALLBACK_BLOCKS)
 
         return super().do_GET()
 
@@ -772,7 +794,84 @@ class GinemedikRequestHandler(http.server.SimpleHTTPRequestHandler):
                         "notes": "Importado masivamente / Google Calendar"
                     })
                     imported_count += 1
-                return self.send_json({"message": f"Se importaron {imported_count} citas exitosamente."})
+                return self.send_json({"message": f"Se importaron {len(citas_data)} citas a modo fallback."})
+
+        elif path == "/api/admin/block-slot":
+            b_date = body.get("block_date")
+            st_time = body.get("start_time")
+            et_time = body.get("end_time")
+            reason = body.get("reason", "Ausencia Médica / Conferencia")
+
+            if not b_date or not st_time or not et_time:
+                return self.send_json({"error": "Completa la fecha y los horarios de inicio y fin."}, code=400)
+
+            conn = get_db()
+            if conn:
+                cursor = conn.cursor()
+                try:
+                    cursor.execute(
+                        "INSERT INTO schedule_blocks (block_date, start_time, end_time, reason) VALUES (%s, %s, %s, %s) RETURNING id;",
+                        (b_date, st_time, et_time, reason)
+                    )
+                    b_id = cursor.fetchone()[0]
+                    conn.commit()
+                    return self.send_json({"message": "Horario bloqueado exitosamente.", "id": b_id})
+                except Exception as e:
+                    conn.rollback()
+                    return self.send_json({"error": f"Error al bloquear horario: {e}"}, code=500)
+                finally:
+                    cursor.close()
+                    conn.close()
+            else:
+                FALLBACK_BLOCKS.append({"id": len(FALLBACK_BLOCKS) + 1, "block_date": b_date, "start_time": st_time, "end_time": et_time, "reason": reason})
+                return self.send_json({"message": "Horario bloqueado en fallback."})
+
+        elif path == "/api/admin/unblock-slot":
+            b_id = body.get("block_id")
+            if not b_id:
+                return self.send_json({"error": "ID de bloque requerido"}, code=400)
+
+            conn = get_db()
+            if conn:
+                cursor = conn.cursor()
+                try:
+                    cursor.execute("DELETE FROM schedule_blocks WHERE id = %s;", (b_id,))
+                    conn.commit()
+                    return self.send_json({"message": "Horario desbloqueado exitosamente."})
+                except Exception as e:
+                    conn.rollback()
+                    return self.send_json({"error": f"Error al desbloquear: {e}"}, code=500)
+                finally:
+                    cursor.close()
+                    conn.close()
+            else:
+                return self.send_json({"message": "Bloque removido."})
+
+        elif path == "/api/admin/appointments/notes":
+            appt_id = body.get("appointment_id")
+            c_notes = body.get("clinical_notes", "")
+
+            if not appt_id:
+                return self.send_json({"error": "ID de cita requerido."}, code=400)
+
+            conn = get_db()
+            if conn:
+                cursor = conn.cursor()
+                try:
+                    cursor.execute("UPDATE appointments SET clinical_notes = %s WHERE id = %s;", (c_notes, appt_id))
+                    conn.commit()
+                    return self.send_json({"message": "Expediente médico actualizado exitosamente."})
+                except Exception as e:
+                    conn.rollback()
+                    return self.send_json({"error": f"Error al actualizar expediente: {e}"}, code=500)
+                finally:
+                    cursor.close()
+                    conn.close()
+            else:
+                for a in FALLBACK_APPOINTMENTS:
+                    if a["id"] == appt_id:
+                        a["clinical_notes"] = c_notes
+                return self.send_json({"message": "Nota guardada en fallback."})
 
         return self.send_json({"error": "Ruta no encontrada"}, code=404)
 

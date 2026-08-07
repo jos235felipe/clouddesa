@@ -665,9 +665,12 @@ function renderAdminDashboard() {
       <td><span class="badge-pink">${a.service_name}</span></td>
       <td><strong>Q${a.price.toFixed(2)}</strong></td>
       <td><span class="badge-slot">${a.status}</span></td>
-      <td>
-        <button class="btn-secondary" style="padding: 4px 8px; font-size: 0.75rem;" onclick="downloadICS('${a.service_name}', '${a.appointment_date}', '${a.start_time}')">
-          .ics
+      <td style="display: flex; gap: 4px; flex-wrap: wrap;">
+        <button class="btn-secondary" style="padding: 4px 8px; font-size: 0.75rem;" onclick="openClinicalNotesModal(${a.id})">
+          📝 Expediente
+        </button>
+        <button class="btn-wa-micro" style="padding: 4px 8px; font-size: 0.75rem;" onclick="sendWhatsAppReminder('${a.patient_name}', '${a.patient_phone}', '${a.appointment_date}', '${a.start_time}', '${a.service_name}')">
+          💬 WhatsApp
         </button>
       </td>
     </tr>
@@ -977,5 +980,122 @@ function initGateParticleCanvas() {
 
   animate();
 }
+
+/* ==========================================================================
+   HERRAMIENTAS DEL PANEL MÉDICO (BLOQUEADOR, EXPEDIENTE Y WHATSAPP)
+   ========================================================================== */
+let currentEditingApptId = null;
+
+window.openBlockSlotModal = function() {
+  const modal = document.getElementById('block-slot-modal');
+  if (modal) modal.classList.remove('hidden');
+};
+
+window.closeBlockSlotModal = function() {
+  const modal = document.getElementById('block-slot-modal');
+  if (modal) modal.classList.add('hidden');
+};
+
+window.handleBlockSlotSubmit = async function(e) {
+  e.preventDefault();
+  const block_date = document.getElementById('block-date').value;
+  const start_time = document.getElementById('block-start-time').value;
+  const end_time = document.getElementById('block-end-time').value;
+  const reason = document.getElementById('block-reason').value.trim() || 'Ausencia Médica / Conferencia';
+
+  try {
+    const res = await fetch(`${API_BASE}/admin/block-slot`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ block_date, start_time, end_time, reason })
+    });
+    const data = await res.json();
+    if (res.ok) {
+      alert('✅ Horario bloqueado exitosamente.');
+      closeBlockSlotModal();
+      fetchAdminAppointments();
+    } else {
+      alert(`⚠️ Error: ${data.error}`);
+    }
+  } catch (err) {
+    alert('Error al conectar con el servidor.');
+  }
+};
+
+window.openClinicalNotesModal = function(apptId) {
+  currentEditingApptId = apptId;
+  const appt = (AppState.adminAppointments || []).find(a => a.id === apptId);
+  if (!appt) return;
+
+  document.getElementById('cn-patient-name').textContent = `Expediente: ${appt.patient_name}`;
+  document.getElementById('cn-appt-info').textContent = `Cita del ${appt.appointment_date} a las ${appt.start_time}`;
+  document.getElementById('cn-patient-phone').textContent = appt.patient_phone || 'No registrado';
+  document.getElementById('cn-patient-email').textContent = appt.patient_email || 'No registrado';
+  document.getElementById('cn-service-name').textContent = appt.service_name;
+  document.getElementById('cn-notes-textarea').value = appt.clinical_notes || '';
+
+  const waBtn = document.getElementById('btn-cn-send-wa');
+  if (waBtn) {
+    waBtn.onclick = () => sendWhatsAppReminder(appt.patient_name, appt.patient_phone, appt.appointment_date, appt.start_time, appt.service_name);
+  }
+
+  const modal = document.getElementById('clinical-notes-modal');
+  if (modal) modal.classList.remove('hidden');
+};
+
+window.closeClinicalNotesModal = function() {
+  const modal = document.getElementById('clinical-notes-modal');
+  if (modal) modal.classList.add('hidden');
+  currentEditingApptId = null;
+};
+
+window.saveClinicalNotes = async function() {
+  if (!currentEditingApptId) return;
+  const clinical_notes = document.getElementById('cn-notes-textarea').value.trim();
+
+  try {
+    const res = await fetch(`${API_BASE}/admin/appointments/notes`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ appointment_id: currentEditingApptId, clinical_notes })
+    });
+    const data = await res.json();
+    if (res.ok) {
+      alert('💾 Expediente médico guardado exitosamente.');
+      const appt = (AppState.adminAppointments || []).find(a => a.id === currentEditingApptId);
+      if (appt) appt.clinical_notes = clinical_notes;
+      closeClinicalNotesModal();
+    } else {
+      alert(`⚠️ Error: ${data.error}`);
+    }
+  } catch (err) {
+    alert('Error al guardar el expediente.');
+  }
+};
+
+window.sendWhatsAppReminder = function(patientName, phone, date, time, service) {
+  if (!phone || phone === '-' || phone === 'No registrado') {
+    alert('⚠️ La paciente no tiene un número de teléfono registrado.');
+    return;
+  }
+
+  let cleanPhone = phone.replace(/\D/g, '');
+  if (!cleanPhone.startsWith('502') && cleanPhone.length === 8) {
+    cleanPhone = '502' + cleanPhone;
+  }
+
+  const msg = `Hola ${patientName}, te saluda la clínica GINEMEDIK. Te recordamos tu cita médica de ${service} con el Dr. Carlos Ordoñez programada para el día ${date} a las ${time}. ¡Te esperamos!`;
+  const url = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(msg)}`;
+  window.open(url, '_blank');
+};
+
+window.showApptDetailAlert = function(patient, service, date, time, phone) {
+  const appt = (AppState.adminAppointments || []).find(a => a.patient_name === patient && a.appointment_date === date);
+  if (appt) {
+    openClinicalNotesModal(appt.id);
+  } else {
+    alert(`📋 Cita de GINEMEDIK:\n\n👤 Paciente: ${patient}\n🩺 Servicio: ${service}\n📅 Fecha: ${date}\n⏰ Hora: ${time}\n📞 Teléfono: ${phone || 'No registrado'}`);
+  }
+};
 
 

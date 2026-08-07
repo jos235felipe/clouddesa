@@ -102,6 +102,7 @@ def init_database(db_password=None):
 
         # Actualizar duración y descripción del servicio completo
         cursor.execute("UPDATE services SET duration_minutes = 60, description = 'Chequeo ginecológico integral completo.' WHERE name ILIKE '%Papanicolaou%' AND name ILIKE '%Ultrasonido%';")
+        cursor.execute("ALTER TABLE appointments ADD COLUMN IF NOT EXISTS clinical_notes TEXT DEFAULT '';")
         
         cursor.execute("SELECT COUNT(*) FROM services;")
         count = cursor.fetchone()[0]
