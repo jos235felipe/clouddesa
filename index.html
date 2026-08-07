@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GINEMEDIK - Sistema de Citas Médicas</title>
+  <meta name="description" content="GINEMEDIK - Acceso al Sistema de Citas Médicas Ginecológicas y Obstétricas.">
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css?v=1.6">
+</head>
+<body>
+
+  <!-- 1. PANTALLA PRINCIPAL DE ACCESO OBLIGATORIO (LOGIN GATE) -->
+  <div id="login-gate" class="gate-wrapper">
+    <!-- Dynamic Soothing Medical Ambient Canvas & Floating Pastel Blobs -->
+    <canvas id="gate-bg-canvas"></canvas>
+    <div class="gate-orb orb-clinic-cyan"></div>
+    <div class="gate-orb orb-clinic-pink"></div>
+    <div class="gate-orb orb-clinic-soft"></div>
+    <div class="gate-wave-overlay"></div>
+
+    <div class="gate-card-wrapper">
+      <div class="gate-card">
+        <!-- Warm Medical Clinic Header Badge -->
+        <div class="clinic-welcome-badge">
+          <span class="badge-icon">🩺</span>
+          <span class="badge-text">CENTRO MÉDICO GINECOLÓGICO & OBSTÉTRICO</span>
+        </div>
+
+        <div class="gate-logo">
+          <div class="logo-clinic-frame">
+            <img src="logo.png" alt="GINEMEDIK Logo Oficial" class="logo-img-gate">
+          </div>
+        </div>
+
+        <div class="gate-header text-center mt-2">
+          <h2 class="clinic-title-gradient">Portal de Salud & Citas</h2>
+          <p class="gate-subtitle">Tu espacio personal para agendar consultas con calidez y confianza.</p>
+        </div>
+
+        <!-- Pestañas Inicio de Sesión / Registro -->
+        <div class="auth-tabs mt-3" id="gate-auth-tabs">
+          <button id="gate-tab-login" class="tab-btn active">
+            <span class="tab-icon">🔑</span> Iniciar Sesión
+          </button>
+          <button id="gate-tab-register" class="tab-btn">
+            <span class="tab-icon">🌸</span> Crear Cuenta
+          </button>
+        </div>
+
+        <!-- Formulario Login -->
+        <form id="gate-login-form" class="auth-form">
+          <div id="gate-login-alert" class="alert-box hidden"></div>
+
+          <div class="form-group">
+            <label for="gate-login-email" class="clinic-label">Correo Electrónico:</label>
+            <div class="input-icon-wrapper">
+              <span class="input-icon">✉️</span>
+              <input type="email" id="gate-login-email" class="form-control clinic-input" placeholder="ejemplo@correo.com" required autocomplete="email">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="gate-login-password" class="clinic-label">Contraseña:</label>
+            <div class="input-icon-wrapper">
+              <span class="input-icon">🔒</span>
+              <input type="password" id="gate-login-password" class="form-control clinic-input" placeholder="••••••••" required autocomplete="current-password">
+            </div>
+          </div>
+
+          <button type="submit" class="btn-main-cta full-width mt-3 btn-clinic-primary">
+            <span>Ingresar al Portal de Citas</span>
+            <span class="btn-arrow">&rarr;</span>
+          </button>
+
+          <div class="demo-accounts-box mt-3">
+            <div class="demo-header-badge">
+              <span class="demo-sparkle">💡</span>
+              <span class="demo-title">Accesos Rápidos de Prueba (Demo)</span>
+            </div>
+            <div class="demo-buttons-flex">
+              <button type="button" class="btn-demo-pill patient-pill" id="gate-demo-patient">
+                <span class="pill-avatar">🌸</span>
+                <div class="pill-text">
+                  <span class="pill-role">PACIENTE</span>
+                  <span class="pill-name">María López</span>
+                </div>
+              </button>
+              <button type="button" class="btn-demo-pill admin-pill" id="gate-demo-admin">
+                <span class="pill-avatar">👩🏻‍⚕️</span>
+                <div class="pill-text">
+                  <span class="pill-role">MÉDICO / ADMIN</span>
+                  <span class="pill-name">Dra. Admin</span>
+                </div>
+              </button>
+            </div>
+          </div>
+        </form>
+
+        <!-- Formulario Registro Paciente -->
+        <form id="gate-register-form" class="auth-form hidden">
+          <div id="gate-register-alert" class="alert-box hidden"></div>
+
+          <div class="form-group">
+            <label for="gate-reg-name" class="clinic-label">Nombre Completo:</label>
+            <div class="input-icon-wrapper">
+              <span class="input-icon">👤</span>
+              <input type="text" id="gate-reg-name" class="form-control clinic-input" placeholder="Ej: María López" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="gate-reg-email" class="clinic-label">Correo Electrónico:</label>
+            <div class="input-icon-wrapper">
+              <span class="input-icon">✉️</span>
+              <input type="email" id="gate-reg-email" class="form-control clinic-input" placeholder="ejemplo@correo.com" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="gate-reg-phone" class="clinic-label">Teléfono de Contacto (WhatsApp):</label>
+            <div class="input-icon-wrapper">
+              <span class="input-icon">💬</span>
+              <input type="tel" id="gate-reg-phone" class="form-control clinic-input" placeholder="5555-1234" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="gate-reg-birthdate" class="clinic-label highlight-label">📅 Fecha de Nacimiento:</label>
+            <input type="date" id="gate-reg-birthdate" class="form-control clinic-input date-accent" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label clinic-label">¿Dónde deseas recibir tu código de verificación?</label>
+            <div class="method-selector">
+              <label class="method-option">
+                <input type="radio" name="gate-verification-method" value="email" checked>
+                <span>📧 Correo Electrónico</span>
+              </label>
+              <label class="method-option">
+                <input type="radio" name="gate-verification-method" value="whatsapp">
+                <span>💬 WhatsApp</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="form-group mt-2">
+            <label for="gate-reg-password" class="clinic-label">Contraseña:</label>
+            <div class="input-icon-wrapper">
+              <span class="input-icon">🔑</span>
+              <input type="password" id="gate-reg-password" class="form-control clinic-input" placeholder="Mínimo 6 caracteres" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="gate-reg-confirm-password" class="clinic-label">Confirmar Contraseña:</label>
+            <div class="input-icon-wrapper">
+              <span class="input-icon">🔒</span>
+              <input type="password" id="gate-reg-confirm-password" class="form-control clinic-input" placeholder="Repite tu contraseña" required>
+            </div>
+          </div>
+
+          <button type="submit" class="btn-primary full-width mt-3 btn-clinic-primary">
+            <span>Enviar Código y Continuar</span> &rarr;
+          </button>
+        </form>
+
+        <!-- Formulario Verificación de Token -->
+        <form id="gate-verify-form" class="auth-form hidden">
+          <div class="text-center mb-3">
+            <span class="verify-icon">🔐</span>
+            <h3 class="clinic-title-gradient">Confirmación de Seguridad</h3>
+            <p id="verify-dest-text" class="verify-subtitle">Ingresa el código de 6 dígitos que te enviamos.</p>
+          </div>
+
+          <div id="gate-verify-alert" class="alert-box hidden"></div>
+
+          <div class="form-group">
+            <label for="gate-verify-code" class="text-center font-bold clinic-label">Código de 6 Dígitos:</label>
+            <input type="text" id="gate-verify-code" class="form-control token-input clinic-input" placeholder="0 0 0 0 0 0" maxlength="6" required>
+          </div>
+
+          <button type="submit" class="btn-main-cta full-width mt-3 btn-clinic-primary">
+            <span>✔ Activar Cuenta e Iniciar Sesión</span>
+          </button>
+          <button type="button" id="btn-back-to-register" class="btn-secondary full-width mt-2">
+            &larr; Regresar al Registro
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. CONTENIDO PRINCIPAL DE LA APLICACIÓN -->
+  <div id="app-content" class="hidden">
+    <header class="navbar">
+      <div class="nav-container">
+        <div class="brand-logo" id="nav-brand">
+          <img src="logo.png" alt="GINEMEDIK Logo Oficial" class="logo-img-nav" style="height: 50px !important; width: auto !important; max-width: 200px !important; display: block !important;">
+        </div>
+
+        <nav class="nav-links" id="patient-nav-links">
+          <a href="#servicios" class="nav-item">Servicios</a>
+          <a href="#booking-section" class="nav-item">Agendar Cita</a>
+          <a href="#patient-dashboard" class="nav-item">Mis Citas</a>
+        </nav>
+
+        <div class="auth-controls" id="auth-controls"></div>
+      </div>
+    </header>
+
+    <!-- Vista Paciente -->
+    <main id="patient-view">
+      <section class="hero-section">
+        <div class="hero-bg-glow"></div>
+        <div class="hero-container">
+          <div class="hero-content">
+            <span class="badge-pink">🌸 Bienvenida a GINEMEDIK</span>
+            <h1 class="hero-title">Tu salud y bienestar en las mejores manos</h1>
+            <p class="hero-subtitle">
+              Cuidamos de ti con calidez, profesionalismo y tecnología avanzada. Agenda tu cita médica en pocos segundos seleccionando el día y la hora que mejor se adapte a ti.
+            </p>
+            <div class="hero-actions">
+              <button id="btn-hero-agendar" class="btn-main-cta">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 4H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"></path><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                Agendar Cita Ahora
+              </button>
+              <a href="#servicios" class="btn-secondary-outline">Ver Servicios y Precios</a>
+            </div>
+          </div>
+
+          <div class="hero-card-preview">
+            <div class="glass-card">
+              <div class="card-badge">Horarios de Atención</div>
+              <div class="schedule-rows">
+                <div class="schedule-row">
+                  <span class="day">Lunes a Viernes</span>
+                  <span class="time">8:00 AM - 5:00 PM</span>
+                </div>
+                <div class="schedule-row highlight">
+                  <span class="day">Sábados</span>
+                  <span class="time">8:00 AM - 1:00 PM</span>
+                </div>
+                <div class="schedule-row muted">
+                  <span class="day">Domingos</span>
+                  <span class="time">Cerrado</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Servicios -->
+      <section id="servicios" class="services-section">
+        <div class="section-container">
+          <div class="section-header">
+            <span class="section-tag">NUESTROS SERVICIOS</span>
+            <h2>Consultas y Chequeos Ginecológicos</h2>
+            <p>Precios transparentes y soluciones diseñadas para tu salud integral.</p>
+          </div>
+          <div class="services-grid" id="services-grid"></div>
+        </div>
+      </section>
+
+      <!-- Wizard Citas -->
+      <section id="booking-section" class="booking-section">
+        <div class="section-container">
+          <div class="booking-wrapper">
+            <div class="booking-header">
+              <h2>Agendar Cita Médica</h2>
+              <p>Selecciona el servicio, el día y la hora disponible.</p>
+            </div>
+
+            <div class="stepper">
+              <div class="step active" id="step-indicator-1">
+                <span class="step-num">1</span>
+                <span class="step-text">Servicio</span>
+              </div>
+              <div class="step-line"></div>
+              <div class="step" id="step-indicator-2">
+                <span class="step-num">2</span>
+                <span class="step-text">Fecha y Hora</span>
+              </div>
+              <div class="step-line"></div>
+              <div class="step" id="step-indicator-3">
+                <span class="step-num">3</span>
+                <span class="step-text">Confirmar</span>
+              </div>
+            </div>
+
+            <div id="booking-alert" class="alert-box hidden"></div>
+
+            <div id="booking-step-1" class="step-content">
+              <h3>Paso 1: Selecciona el motivo de tu consulta</h3>
+              <div class="service-selector-grid" id="step-service-list"></div>
+              <div class="step-actions right">
+                <button id="btn-step1-next" class="btn-primary" disabled>Continuar a Fecha y Hora &rarr;</button>
+              </div>
+            </div>
+
+            <div id="booking-step-2" class="step-content hidden">
+              <h3>Paso 2: Selecciona día y hora conveniente</h3>
+              <p class="step-desc">Atendemos de Lunes a Viernes (8:00 AM - 5:00 PM) y Sábados (8:00 AM - 1:00 PM).</p>
+              
+              <div class="date-time-picker-layout">
+                <div class="picker-column">
+                  <label for="appointment-date-input" class="form-label">Fecha de la Cita:</label>
+                  <input type="date" id="appointment-date-input" class="form-control-lg">
+                </div>
+
+                <div class="picker-column slots-column">
+                  <label class="form-label" id="slots-header-label">Horarios Disponibles:</label>
+                  <div id="slots-container" class="slots-grid">
+                    <div class="empty-slots-msg">Selecciona una fecha para ver las horas disponibles.</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="step-actions">
+                <button id="btn-step2-back" class="btn-secondary">&larr; Volver a Servicios</button>
+                <button id="btn-step2-next" class="btn-primary" disabled>Continuar a Confirmación &rarr;</button>
+              </div>
+            </div>
+
+            <div id="booking-step-3" class="step-content hidden">
+              <h3>Paso 3: Revisa y confirma los detalles de tu cita</h3>
+              
+              <div class="summary-card">
+                <div class="summary-row">
+                  <span class="label">Paciente:</span>
+                  <span class="value" id="sum-patient-name">Cargando...</span>
+                </div>
+                <div class="summary-row">
+                  <span class="label">Correo Electrónico:</span>
+                  <span class="value" id="sum-patient-email">Cargando...</span>
+                </div>
+                <div class="summary-row">
+                  <span class="label">Teléfono:</span>
+                  <span class="value" id="sum-patient-phone">Cargando...</span>
+                </div>
+                <div class="summary-divider"></div>
+                <div class="summary-row">
+                  <span class="label">Servicio Solicitado:</span>
+                  <span class="value highlight" id="sum-service-name">Consulta</span>
+                </div>
+                <div class="summary-row">
+                  <span class="label">Precio del Servicio:</span>
+                  <span class="value price" id="sum-service-price">Q190.00</span>
+                </div>
+                <div class="summary-row">
+                  <span class="label">Fecha Programada:</span>
+                  <span class="value" id="sum-date">2026-08-10</span>
+                </div>
+                <div class="summary-row">
+                  <span class="label">Hora Seleccionada:</span>
+                  <span class="value badge-slot" id="sum-time">09:00 AM</span>
+                </div>
+                <div class="form-group mt-3">
+                  <label for="booking-notes" class="form-label">Notas o Síntomas (Opcional):</label>
+                  <textarea id="booking-notes" class="form-control" rows="2" placeholder="Describe brevemente tu consulta..."></textarea>
+                </div>
+              </div>
+
+              <div class="step-actions">
+                <button id="btn-step3-back" class="btn-secondary">&larr; Cambiar Fecha/Hora</button>
+                <button id="btn-confirm-booking" class="btn-main-cta">
+                  ✔ Confirmar y Agendar Cita
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Dashboard Paciente -->
+      <section id="patient-dashboard" class="dashboard-section">
+        <div class="section-container">
+          <div class="dash-header">
+            <div>
+              <h2>Mis Citas Programadas</h2>
+              <p>Historial y detalles de tus citas médicas.</p>
+            </div>
+          </div>
+          <div id="patient-appointments-list" class="appointments-grid"></div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Vista Admin -->
+    <main id="admin-view" class="hidden">
+      <section id="admin-dashboard" class="dashboard-section admin-section">
+        <div class="section-container">
+          <div class="dash-header">
+            <div>
+              <span class="badge-admin">MÓDULO ADMINISTRATIVO</span>
+              <h2>Panel de Super Administrador - GINEMEDIK</h2>
+              <p>Gestión completa de agenda médica, pacientes y carga masiva de citas.</p>
+            </div>
+            <div class="admin-actions-top">
+              <button id="btn-open-bulk-modal" class="btn-secondary-glow">
+                📁 Carga Masiva (CSV / Google Calendar)
+              </button>
+              <button id="btn-open-gcal-sync" class="btn-primary-glow">
+                🗓 Sincronización Google Calendar
+              </button>
+            </div>
+          </div>
+
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-icon cyan">📅</div>
+              <div class="stat-info">
+                <span class="stat-label">Total Citas Registradas</span>
+                <span class="stat-value" id="admin-stat-total">0</span>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon pink">👥</div>
+              <div class="stat-info">
+                <span class="stat-label">Pacientes Atendidas</span>
+                <span class="stat-value" id="admin-stat-patients">0</span>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon green">💰</div>
+              <div class="stat-info">
+                <span class="stat-label">Ingresos Estimados</span>
+                <span class="stat-value" id="admin-stat-revenue">Q0.00</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="admin-table-card mt-4">
+            <div class="table-header">
+              <h3>Agenda Médica General</h3>
+              <div class="table-filters">
+                <input type="text" id="admin-search-input" class="form-control" placeholder="Buscar por paciente o servicio...">
+              </div>
+            </div>
+
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Fecha y Hora</th>
+                    <th>Paciente</th>
+                    <th>Teléfono / Correo</th>
+                    <th>Servicio</th>
+                    <th>Precio</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                  </tr>
+                </thead>
+                <tbody id="admin-appointments-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-container">
+        <div class="footer-brand">
+          <h3>GINEMEDIK</h3>
+          <p>Ginecólogo y Obstetra. Cuidado integral para cada etapa de la mujer.</p>
+        </div>
+        <div class="footer-info">
+          <h4>Horario de Atención</h4>
+          <p>Lunes a Viernes: 8:00 AM - 5:00 PM</p>
+          <p>Sábados: 8:00 AM - 1:00 PM</p>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 GINEMEDIK - Todos los derechos reservados. Base de datos PostgreSQL DESA.</p>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Modales -->
+  <div id="bulk-modal" class="modal-overlay hidden">
+    <div class="modal-card wide">
+      <button class="modal-close" id="btn-close-bulk">&times;</button>
+      <h3>📁 Carga Masiva de Citas (CSV / Google Calendar)</h3>
+      <p class="form-subtitle">Carga un archivo CSV con las citas previas para ingresarlas a PostgreSQL <strong>DESA</strong>.</p>
+      <div class="bulk-upload-area" id="drop-zone">
+        <div class="upload-icon">📄</div>
+        <p><strong>Arrastra y suelta tu archivo CSV aquí</strong> o haz clic para examinar.</p>
+        <input type="file" id="csv-file-input" accept=".csv" class="hidden-input">
+        <button id="btn-select-csv" class="btn-secondary mt-2">Seleccionar Archivo CSV</button>
+      </div>
+      <div class="csv-sample-info mt-3">
+        <p><strong>Formato requerido en el CSV:</strong></p>
+        <code>patient_name, patient_email, patient_phone, service_name, price, appointment_date, start_time</code>
+        <button id="btn-download-sample-csv" class="btn-link mt-1">⬇ Descargar Plantilla CSV de Ejemplo</button>
+      </div>
+      <div id="csv-preview-container" class="mt-4 hidden">
+        <h4>Vista Previa de Citas a Importar:</h4>
+        <div class="table-responsive max-h-200">
+          <table class="data-table small">
+            <thead>
+              <tr>
+                <th>Paciente</th>
+                <th>Fecha</th>
+                <th>Hora</th>
+                <th>Servicio</th>
+                <th>Precio</th>
+              </tr>
+            </thead>
+            <tbody id="csv-preview-tbody"></tbody>
+          </table>
+        </div>
+        <div class="mt-3 text-right">
+          <button id="btn-execute-import" class="btn-primary">🚀 Confirmar e Importar Citas a PostgreSQL</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="gcal-modal" class="modal-overlay hidden">
+    <div class="modal-card wide">
+      <button class="modal-close" id="btn-close-gcal">&times;</button>
+      <div class="gcal-modal-content">
+        <div class="gcal-header">
+          <span class="gcal-icon">🗓</span>
+          <div>
+            <h3>Sincronización con Google Calendar</h3>
+            <p>Integración en tiempo real entre GINEMEDIK y Google Calendar.</p>
+          </div>
+        </div>
+        <div class="gcal-body mt-3">
+          <div class="info-card-blue">
+            <h4>💡 ¿Cómo funciona la sincronización automática?</h4>
+            <p>En producción, se utiliza la API de Google Calendar. Cada cita se guarda en PostgreSQL <strong>DESA</strong> y en el Google Calendar del médico.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js?v=1.6"></script>
+</body>
+</html>
