@@ -77,7 +77,7 @@ Environment=DB_USER=postgres
 Environment=DB_PASSWORD=ginemedik2026!
 Environment=BREVO_API_KEY=${BREVO_KEY}
 Environment=SENDER_EMAIL=citas@ginemedik.com
-Environment=SENDER_NAME=GINEMEDIK Clínica
+Environment="SENDER_NAME=GINEMEDIK Clínica"
 Environment=JWT_SECRET=${JWT_SEC}
 Environment=ALLOWED_ORIGINS=*
 
