@@ -6,6 +6,7 @@ const API_BASE = '/api';
 
 const AppState = {
   currentUser: JSON.parse(localStorage.getItem('ginemedik_user')) || null,
+  token: localStorage.getItem('ginemedik_token') || null,
   pendingVerifyEmail: null,
   services: [],
   selectedService: null,
@@ -17,6 +18,18 @@ const AppState = {
   adminAppointments: [],
   csvParsedAppointments: []
 };
+
+async function apiFetch(url, options = {}) {
+  options.headers = options.headers || {};
+  if (AppState.token) {
+    options.headers['Authorization'] = `Bearer ${AppState.token}`;
+  }
+  const res = await fetch(url, options);
+  if (res.status === 401 && !url.includes('/auth/login')) {
+    logout();
+  }
+  return res;
+}
 
 document.addEventListener('DOMContentLoaded', () => {
   initApp();
@@ -150,7 +163,7 @@ async function handleGateLogin(e) {
   const password = document.getElementById('gate-login-password').value;
 
   try {
-    const res = await fetch(`${API_BASE}/auth/login`, {
+    const res = await apiFetch(`${API_BASE}/auth/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password })
@@ -158,7 +171,7 @@ async function handleGateLogin(e) {
     const data = await res.json();
 
     if (res.ok) {
-      setLoggedInUser(data.user);
+      setLoggedInUser(data.user, data.token);
     } else if (res.status === 403 && data.requires_verification) {
       AppState.pendingVerifyEmail = email;
       showVerificationForm(email, 'email');
@@ -188,7 +201,7 @@ async function handleGateRegister(e) {
   const method = methodEl ? methodEl.value : 'email';
 
   try {
-    const res = await fetch(`${API_BASE}/auth/register`, {
+    const res = await apiFetch(`${API_BASE}/auth/register`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ name, email, phone, birthdate, password, verification_method: method })
@@ -225,7 +238,7 @@ async function handleGateVerify(e) {
   const code = document.getElementById('gate-verify-code').value.trim();
 
   try {
-    const res = await fetch(`${API_BASE}/auth/verify-token`, {
+    const res = await apiFetch(`${API_BASE}/auth/verify-token`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email: AppState.pendingVerifyEmail, token: code })
@@ -234,7 +247,7 @@ async function handleGateVerify(e) {
 
     if (res.ok) {
       alert('¡Cuenta activada exitosamente! Bienvenida a GINEMEDIK.');
-      setLoggedInUser(data.user);
+      setLoggedInUser(data.user, data.token);
     } else {
       showAlert('gate-verify-alert', data.error || 'Código incorrecto.', 'danger');
     }
@@ -250,7 +263,7 @@ async function handleResendCode() {
   }
   showAlert('gate-verify-alert', 'Enviando nuevo código a tu correo...', 'info');
   try {
-    const res = await fetch(`${API_BASE}/auth/resend-token`, {
+    const res = await apiFetch(`${API_BASE}/auth/resend-token`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email: AppState.pendingVerifyEmail })
@@ -272,15 +285,21 @@ function quickGateLogin(email, password) {
   handleGateLogin({ preventDefault: () => {} });
 }
 
-function setLoggedInUser(user) {
+function setLoggedInUser(user, token = null) {
   AppState.currentUser = user;
+  if (token) {
+    AppState.token = token;
+    localStorage.setItem('ginemedik_token', token);
+  }
   localStorage.setItem('ginemedik_user', JSON.stringify(user));
   evaluateAccessGate();
 }
 
 function logout() {
   AppState.currentUser = null;
+  AppState.token = null;
   localStorage.removeItem('ginemedik_user');
+  localStorage.removeItem('ginemedik_token');
   evaluateAccessGate();
 }
 
@@ -563,7 +582,7 @@ async function handleConfirmBooking() {
   };
 
   try {
-    const res = await fetch(`${API_BASE}/appointments`, {
+    const res = await apiFetch(`${API_BASE}/appointments`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(bookingData)
@@ -597,7 +616,7 @@ async function fetchMyPatientAppointments() {
   if (!AppState.currentUser) return;
 
   try {
-    const res = await fetch(`${API_BASE}/appointments/my?email=${encodeURIComponent(AppState.currentUser.email)}`);
+    const res = await apiFetch(`${API_BASE}/appointments/my?email=${encodeURIComponent(AppState.currentUser.email)}`);
     if (res.ok) {
       AppState.myAppointments = await res.json();
     }
@@ -632,7 +651,7 @@ function renderPatientAppointments() {
 
 async function fetchAdminAppointments() {
   try {
-    const res = await fetch(`${API_BASE}/admin/appointments`);
+    const res = await apiFetch(`${API_BASE}/admin/appointments`);
     if (res.ok) {
       AppState.adminAppointments = await res.json();
     }
@@ -832,7 +851,7 @@ async function executeBulkImport() {
   if (AppState.csvParsedAppointments.length === 0) return;
 
   try {
-    const res = await fetch(`${API_BASE}/admin/bulk-import`, {
+    const res = await apiFetch(`${API_BASE}/admin/bulk-import`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ appointments: AppState.csvParsedAppointments })
@@ -1004,7 +1023,7 @@ window.handleBlockSlotSubmit = async function(e) {
   const reason = document.getElementById('block-reason').value.trim() || 'Ausencia Médica / Conferencia';
 
   try {
-    const res = await fetch(`${API_BASE}/admin/block-slot`, {
+    const res = await apiFetch(`${API_BASE}/admin/block-slot`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ block_date, start_time, end_time, reason })
@@ -1054,7 +1073,7 @@ window.saveClinicalNotes = async function() {
   const clinical_notes = document.getElementById('cn-notes-textarea').value.trim();
 
   try {
-    const res = await fetch(`${API_BASE}/admin/appointments/notes`, {
+    const res = await apiFetch(`${API_BASE}/admin/appointments/notes`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ appointment_id: currentEditingApptId, clinical_notes })

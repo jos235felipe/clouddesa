@@ -1,6 +1,7 @@
 import psycopg2
 import sys
 import hashlib
+import secrets
 import os
 
 DB_HOST = os.environ.get("DB_HOST", "127.0.0.1")
@@ -25,8 +26,18 @@ def get_connection(password=None):
         print(f"Error al conectar a DB: {e}")
         return None
 
+def hash_password_pbkdf2(password, salt=None):
+    if not salt:
+        salt = secrets.token_bytes(16)
+    elif isinstance(salt, str):
+        salt = bytes.fromhex(salt)
+    
+    key = hashlib.pbkdf2_hmac('sha256', password.encode('utf-8'), salt, 600000)
+    return key.hex(), salt.hex()
+
 def hash_password(password):
-    return hashlib.sha256(password.encode('utf-8')).hexdigest()
+    h, _ = hash_password_pbkdf2(password, bytes.fromhex("00"*16))
+    return h
 
 SCHEMA_SQL = """
 CREATE TABLE IF NOT EXISTS users (
@@ -36,6 +47,7 @@ CREATE TABLE IF NOT EXISTS users (
     phone VARCHAR(30),
     birthdate DATE,
     password_hash VARCHAR(255) NOT NULL,
+    password_salt VARCHAR(64),
     role VARCHAR(20) NOT NULL DEFAULT 'paciente',
     is_verified BOOLEAN DEFAULT FALSE,
     verification_token VARCHAR(10),
@@ -103,6 +115,7 @@ def init_database(db_password=None):
         # Actualizar duración y descripción del servicio completo
         cursor.execute("UPDATE services SET duration_minutes = 60, description = 'Chequeo ginecológico integral completo.' WHERE name ILIKE '%Papanicolaou%' AND name ILIKE '%Ultrasonido%';")
         cursor.execute("ALTER TABLE appointments ADD COLUMN IF NOT EXISTS clinical_notes TEXT DEFAULT '';")
+        cursor.execute("ALTER TABLE users ADD COLUMN IF NOT EXISTS password_salt VARCHAR(64);")
         
         cursor.execute("SELECT COUNT(*) FROM services;")
         count = cursor.fetchone()[0]
@@ -122,9 +135,10 @@ def init_database(db_password=None):
 
         cursor.execute("SELECT COUNT(*) FROM users WHERE role = 'superadmin';")
         if cursor.fetchone()[0] == 0:
+            p_hash, p_salt = hash_password_pbkdf2("admin123")
             cursor.execute(
-                "INSERT INTO users (name, email, phone, birthdate, password_hash, role, is_verified) VALUES (%s, %s, %s, %s, %s, %s, TRUE);",
-                ("Dr. Carlos Ordoñez", "admin@ginemedik.com", "5382-4026", "1985-05-15", hash_password("admin123"), "superadmin")
+                "INSERT INTO users (name, email, phone, birthdate, password_hash, password_salt, role, is_verified) VALUES (%s, %s, %s, %s, %s, %s, %s, TRUE);",
+                ("Dr. Carlos Ordoñez", "admin@ginemedik.com", "5382-4026", "1985-05-15", p_hash, p_salt, "superadmin")
             )
 
         conn.commit()

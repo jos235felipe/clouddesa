@@ -40,6 +40,8 @@ sudo pip3 install psycopg2-binary --break-system-packages || sudo pip3 install p
 BREVO_KEY="${1:-$BREVO_API_KEY}"
 
 # 7. Crear archivo de variables de entorno (.env)
+JWT_SEC="${2:-$(openssl rand -hex 32 || echo 'ginemedik_prod_jwt_secret_key_2026_random')}"
+
 sudo bash -c "cat <<EOF > /var/www/ginemedik/.env
 DB_HOST=127.0.0.1
 DB_PORT=5432
@@ -49,9 +51,11 @@ DB_PASSWORD=ginemedik2026!
 BREVO_API_KEY=${BREVO_KEY}
 SENDER_EMAIL=citas@ginemedik.com
 SENDER_NAME=GINEMEDIK Clínica
+JWT_SECRET=${JWT_SEC}
+ALLOWED_ORIGINS=*
 EOF"
 
-# 8. Poblar la base de datos PostgreSQL
+# 8. Poblar y migrar la base de datos PostgreSQL
 python3 init_db.py ginemedik2026!
 
 # 9. Crear servicio de fondo Systemd (Servidor activo 24/7)
@@ -74,6 +78,8 @@ Environment=DB_PASSWORD=ginemedik2026!
 Environment=BREVO_API_KEY=${BREVO_KEY}
 Environment=SENDER_EMAIL=citas@ginemedik.com
 Environment=SENDER_NAME=GINEMEDIK Clínica
+Environment=JWT_SECRET=${JWT_SEC}
+Environment=ALLOWED_ORIGINS=*
 
 [Install]
 WantedBy=multi-user.target
