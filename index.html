@@ -561,28 +561,26 @@
   <div id="bulk-modal" class="modal-overlay hidden">
     <div class="modal-card wide">
       <button class="modal-close" id="btn-close-bulk">&times;</button>
-      <h3>📁 Carga Masiva de Citas (CSV / Google Calendar)</h3>
-      <p class="form-subtitle">Carga un archivo CSV con las citas previas para ingresarlas a PostgreSQL
-        <strong>DESA</strong>.
-      </p>
+      <h3>📁 Importar Citas (Google Calendar / .ics / .calendar / .zip / CSV)</h3>
+      <p class="form-subtitle">Selecciona el archivo <strong>.zip</strong> exportado de Google Calendar, el archivo <strong>.ics / .calendar</strong> extraído, o un CSV con citas previas.</p>
+      
       <div class="bulk-upload-area" id="drop-zone">
-        <div class="upload-icon">📄</div>
-        <p><strong>Arrastra y suelta tu archivo CSV aquí</strong> o haz clic para examinar.</p>
-        <input type="file" id="csv-file-input" accept=".csv" class="hidden-input">
-        <button id="btn-select-csv" class="btn-secondary mt-2">Seleccionar Archivo CSV</button>
+        <div class="upload-icon">📅</div>
+        <p><strong>Arrastra tu archivo (.zip, .ics, .calendar o .csv) aquí</strong> o haz clic para examinar.</p>
+        <input type="file" id="csv-file-input" accept=".csv,.ics,.calendar,.txt,.zip" class="hidden-input">
+        <button id="btn-select-csv" class="btn-secondary mt-2">Seleccionar Archivo (.zip, .ics, .calendar, .csv)</button>
       </div>
       <div class="csv-sample-info mt-3">
-        <p><strong>Formato requerido en el CSV:</strong></p>
-        <code>patient_name, patient_email, patient_phone, service_name, price, appointment_date, start_time</code>
+        <p><strong>Formatos compatibles:</strong> Archivos exportados de Google Calendar (<code>.zip</code>, <code>.ics</code>, <code>.calendar</code>) y plantillas CSV.</p>
         <button id="btn-download-sample-csv" class="btn-link mt-1">⬇ Descargar Plantilla CSV de Ejemplo</button>
       </div>
       <div id="csv-preview-container" class="mt-4 hidden">
-        <h4>Vista Previa de Citas a Importar:</h4>
+        <h4>Vista Previa de Citas Detectadas:</h4>
         <div class="table-responsive max-h-200">
           <table class="data-table small">
             <thead>
               <tr>
-                <th>Paciente</th>
+                <th>Paciente / Cita</th>
                 <th>Fecha</th>
                 <th>Hora</th>
                 <th>Servicio</th>
@@ -696,7 +694,8 @@
       <span class="wa-float-text">WhatsApp Clínica</span>
     </a>
 
-    <script src="app.js?v=2.8"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="app.js?v=2.9"></script>
 </body>
 
 </html>

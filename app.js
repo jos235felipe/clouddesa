@@ -799,16 +799,113 @@ function handleCSVFileSelect(e) {
   const file = e.target.files[0];
   if (!file) return;
 
-  const reader = new FileReader();
-  reader.onload = function(evt) {
-    parseCSVText(evt.target.result);
-  };
-  reader.readAsText(file);
+  const fileName = file.name.toLowerCase();
+
+  if (fileName.endsWith('.zip')) {
+    if (typeof JSZip === 'undefined') {
+      alert('Cargando descompresor de archivos .zip, por favor reintenta en un momento.');
+      return;
+    }
+    JSZip.loadAsync(file).then(async (zip) => {
+      let allAppointments = [];
+      for (let relativePath in zip.files) {
+        const zipEntry = zip.files[relativePath];
+        if (!zipEntry.dir) {
+          const content = await zipEntry.async("string");
+          if (relativePath.toLowerCase().endsWith('.csv')) {
+            allAppointments = allAppointments.concat(parseCSVText(content, false));
+          } else if (relativePath.toLowerCase().includes('calendar') || relativePath.toLowerCase().endsWith('.ics') || content.includes('BEGIN:VCALENDAR')) {
+            allAppointments = allAppointments.concat(parseICalText(content));
+          }
+        }
+      }
+      AppState.csvParsedAppointments = allAppointments;
+      renderCSVPreview();
+    }).catch(err => {
+      alert('Error al descomprimir el archivo .zip de Google Calendar: ' + err.message);
+    });
+  } else {
+    const reader = new FileReader();
+    reader.onload = function(evt) {
+      const text = evt.target.result;
+      if (fileName.endsWith('.csv')) {
+        parseCSVText(text, true);
+      } else {
+        const appts = parseICalText(text);
+        if (appts.length === 0 && text.includes(',')) {
+          parseCSVText(text, true);
+        } else {
+          AppState.csvParsedAppointments = appts;
+          renderCSVPreview();
+        }
+      }
+    };
+    reader.readAsText(file);
+  }
 }
 
-function parseCSVText(csvText) {
+function parseICalText(icalText) {
+  const events = [];
+  const veventBlocks = icalText.split('BEGIN:VEVENT');
+  
+  for (let i = 1; i < veventBlocks.length; i++) {
+    const block = veventBlocks[i].split('END:VEVENT')[0];
+    
+    let summary = '';
+    let dtstart = '';
+    let description = '';
+    
+    const lines = block.split(/\r?\n/);
+    for (let j = 0; j < lines.length; j++) {
+      const line = lines[j].trim();
+      if (line.startsWith('SUMMARY:')) {
+        summary = line.substring(8).trim();
+      } else if (line.startsWith('DTSTART') && line.includes(':')) {
+        dtstart = line.split(':')[1].trim();
+      } else if (line.startsWith('DESCRIPTION:')) {
+        description = line.substring(12).trim();
+      }
+    }
+    
+    if (summary && dtstart) {
+      const cleanDt = dtstart.replace(/\D/g, '');
+      if (cleanDt.length >= 8) {
+        const year = cleanDt.substring(0, 4);
+        const month = cleanDt.substring(4, 6);
+        const day = cleanDt.substring(6, 8);
+        const dateStr = `${year}-${month}-${day}`;
+        
+        let timeStr = "09:00";
+        if (cleanDt.length >= 12) {
+          const hh = cleanDt.substring(8, 10);
+          const mm = cleanDt.substring(10, 12);
+          timeStr = `${hh}:${mm}`;
+        }
+        
+        const cleanSummary = summary
+          .replace(/\\,/g, ',')
+          .replace(/\\;/g, ';')
+          .replace(/Cita - |Consulta - |GINEMEDIK - /gi, '');
+
+        events.push({
+          patient_name: cleanSummary || 'Paciente Google Calendar',
+          patient_email: 'importado@ginemedik.com',
+          patient_phone: '5555-0000',
+          service_name: 'Consulta',
+          price: 190.0,
+          appointment_date: dateStr,
+          start_time: timeStr,
+          notes: (description || 'Importado desde Google Calendar').replace(/\\n/g, ' ')
+        });
+      }
+    }
+  }
+  return events;
+}
+
+function parseCSVText(csvText, updateState = true) {
   const lines = csvText.split('\n').map(l => l.trim()).filter(l => l.length > 0);
-  if (lines.length < 2) return;
+  if (lines.length < 2) return [];
 
   const appointments = [];
   for (let i = 1; i < lines.length; i++) {
@@ -822,13 +919,16 @@ function parseCSVText(csvText) {
         price: parseFloat(cols[4]) || 190.0,
         appointment_date: cols[5],
         start_time: cols[6] || '09:00',
-        notes: cols[7] || 'Carga Masiva CSV'
+        notes: cols[7] || 'Carga Masiva'
       });
     }
   }
 
-  AppState.csvParsedAppointments = appointments;
-  renderCSVPreview();
+  if (updateState) {
+    AppState.csvParsedAppointments = appointments;
+    renderCSVPreview();
+  }
+  return appointments;
 }
 
 function renderCSVPreview() {
